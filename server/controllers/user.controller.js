@@ -47,7 +47,7 @@ const createUser = async (req, res) => {
                 phone,
             },
         });
-        if (hasExistUser.rows.length > 0) {
+        if (hasExistUser.length > 0) {
             res.json({
                 code: 1001,
                 error: "This phone number already exists",
@@ -67,7 +67,7 @@ const createUser = async (req, res) => {
             password: hashedPassword,
             role: 0,
         });
-        const userId = result.rows[0].id;
+        const userId = result.id;
 
         // Generate jwt token
         const token = jwt.sign({ userId }, "secret");
