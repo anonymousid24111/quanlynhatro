@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const { pool } = require("../db");
 const jwt = require("jsonwebtoken");
+const UserProfile = require("../models/userprofile.model");
 
 const createUser = async (req, res) => {
     const { username, phone, password } = req.body;
@@ -40,10 +41,12 @@ const createUser = async (req, res) => {
             return;
         }
 
-        const hasExistUser = await pool.query(
-            "SELECT * FROM userprofile WHERE userprofile.phone=$1",
-            [phone]
-        );
+        // const hasExistUser = await pool.query("SELECT * FROM userprofile WHERE userprofile.phone=$1", [phone]);
+        const hasExistUser = await UserProfile.findAll({
+            where: {
+                phone,
+            },
+        });
         if (hasExistUser.rows.length > 0) {
             res.json({
                 code: 1001,
@@ -52,10 +55,18 @@ const createUser = async (req, res) => {
             return;
         }
 
-        const result = await pool.query(
-            "INSERT INTO userprofile (username, phone, password, role) VALUES ($1, $2, $3, $4) RETURNING id",
-            [username, phone, hashedPassword, 0]
-        );
+        // const result = await pool.query("INSERT INTO userprofile (username, phone, password, role) VALUES ($1, $2, $3, $4) RETURNING id", [
+        //     username,
+        //     phone,
+        //     hashedPassword,
+        //     0,
+        // ]);
+        const result = await UserProfile.create({
+            username,
+            phone,
+            password: hashedPassword,
+            role: 0,
+        });
         const userId = result.rows[0].id;
 
         // Generate jwt token
@@ -82,11 +93,13 @@ const login = async (req, res) => {
         });
         return;
     }
-    const result = await pool.query(
-        "SELECT * FROM userprofile WHERE userprofile.phone = $1",
-        [phone]
-    );
-    const user = result.rows[0];
+    // const result = await pool.query("SELECT * FROM userprofile WHERE userprofile.phone = $1", [phone]);
+    const result = await UserProfile.findOne({
+        where: {
+            phone,
+        },
+    });
+    const user = result;
 
     if (!user) {
         return res.json({
@@ -117,11 +130,13 @@ const getUserById = async (req, res) => {
         });
         return;
     }
-    const result = await pool.query(
-        "SELECT * FROM userprofile WHERE userprofile.id = $1",
-        [id]
-    );
-    const user = result.rows[0];
+    // const result = await pool.query("SELECT * FROM userprofile WHERE userprofile.id = $1", [id]);
+    const user = await UserProfile.findOne({
+        where: {
+            id,
+        },
+    });
+    // const user = result.rows[0];
 
     if (!user) {
         return res.json({
@@ -147,11 +162,13 @@ const getMe = async (req, res) => {
             });
             return;
         }
-        const result = await pool.query(
-            "SELECT * FROM userprofile WHERE userprofile.id = $1",
-            [userId]
-        );
-        const user = result.rows[0];
+        // const result = await pool.query("SELECT * FROM userprofile WHERE userprofile.id = $1", [userId]);
+        // const user = result.rows[0];
+        const user = await UserProfile.findOne({
+            where: {
+                id,
+            },
+        });
 
         if (!user) {
             return res.json({

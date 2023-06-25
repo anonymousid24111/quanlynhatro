@@ -4,6 +4,13 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const userRoute = require("./routers/user.route");
+const { sequelize } = require("./db");
+try {
+    sequelize.authenticate();
+    console.log("Connection has been established successfully.");
+} catch (error) {
+    console.error("Unable to connect to the database:", error);
+}
 
 const app = express();
 app.use(express.json());
