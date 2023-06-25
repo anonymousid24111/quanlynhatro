@@ -1,17 +1,55 @@
+import { Outlet, useNavigate } from "react-router-dom";
+import ResponsiveAppBar, { INavItem } from "../../components/ResponsiveAppBar";
+import { useAppDispatch } from "../../redux/hooks";
+import { getMeAsync } from "../auth/authAction";
+import { UserRole } from "../auth/models";
 import { useEffect } from "react";
-import fetchHandler from "../../config/axios";
 
 const Guest = () => {
-    const getUserInfo = async () => {
-        const { data } = await fetchHandler.get("/user/1");
-        console.log("data", data);
+    const pages: INavItem[] = [
+        {
+            link: "/post",
+            title: "Bảng tin",
+        },
+    ];
+    const settings: INavItem[] = [
+        {
+            link: "/login",
+            title: "Đăng nhập",
+        },
+    ];
+
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const fetchMe = async () => {
+        const { payload } = await dispatch(getMeAsync());
+        const { data } = payload;
+        const { role } = data || {};
+
+        if (role === UserRole.Tenant) {
+            navigate("/tenant");
+        }
+        if (role === UserRole.Lessor) {
+            navigate("/lessor");
+        }
+        if (role === UserRole.Admin) {
+            navigate("/admin");
+        }
+        if (role === UserRole.Guest) {
+            navigate("/");
+        }
     };
 
     useEffect(() => {
-        getUserInfo();
+        fetchMe();
     }, []);
 
-    return <div>Guest</div>;
+    return (
+        <>
+            <ResponsiveAppBar pages={pages} settings={settings} />
+            <Outlet />
+        </>
+    );
 };
 
 export default Guest;

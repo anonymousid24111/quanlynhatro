@@ -5,10 +5,10 @@ const UserProfile = require("../models/userprofile.model");
 const { USER_ROLE } = require("../consts/user.const");
 
 const createUser = async (req, res) => {
-    const { username, phone, password } = req.body;
     // Hash and salt password
 
     try {
+        const { username, phone, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         // validate data
         if (!username || !phone || !password) {
@@ -68,15 +68,18 @@ const createUser = async (req, res) => {
             password: hashedPassword,
             role: USER_ROLE.Tenant,
         });
-        const { id, role, username } = result;
+        const { id, role, username: resultUsername } = result;
 
         // Generate jwt token
-        const token = jwt.sign({ id, role, username }, "secret");
+        const token = jwt.sign(
+            { id, role, username: resultUsername },
+            "secret"
+        );
 
         res.json({
             data: {
                 token,
-                username,
+                username: resultUsername,
                 role,
             },
         });
@@ -101,7 +104,8 @@ const login = async (req, res) => {
             phone,
         },
     });
-    const { id, role, username } = user;
+
+    const { id, role, username } = user || {};
 
     if (!user) {
         return res.json({
@@ -148,10 +152,45 @@ const getUserById = async (req, res) => {
 
     res.json({
         data: {
-            user,
+            id: user.id,
+            username: user.username,
+            phone: user.phone,
+            role: user.role,
         },
     });
 };
+const getTenants = async (req, res) => {
+    const { id, role } = req.decoded;
+    if (role !== USER_ROLE.Admin) {
+        res.json({
+            error: "Don't have permission",
+        });
+        return;
+    }
+    if (!id) {
+        res.json({
+            error: "Missing id",
+        });
+        return;
+    }
+    // const result = await pool.query("SELECT * FROM userprofile WHERE userprofile.id = $1", [id]);
+    const users = await UserProfile.findAll({
+        attributes: ["id", "username", "phone", "role"],
+    });
+
+    // const user = result.rows[0];
+
+    if (!users) {
+        return res.json({
+            error: "Current user not found",
+        });
+    }
+
+    res.json({
+        items: users,
+    });
+};
+
 const getMe = async (req, res) => {
     try {
         const { id } = req.decoded;
@@ -177,12 +216,10 @@ const getMe = async (req, res) => {
 
         res.json({
             data: {
-                user: {
-                    id: user.id,
-                    username: user.username,
-                    phone: user.phone,
-                    role: user.role,
-                },
+                id: user.id,
+                username: user.username,
+                phone: user.phone,
+                role: user.role,
             },
         });
     } catch (error) {
@@ -197,4 +234,5 @@ module.exports = {
     login,
     getUserById,
     getMe,
+    getTenants,
 };

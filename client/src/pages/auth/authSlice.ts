@@ -1,5 +1,6 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
+import { getMeAsync } from "./authAction";
 import { IUserInfo, UserRole } from "./models";
 
 // Define a type for the slice state
@@ -25,6 +26,17 @@ export const counterSlice = createSlice({
         setUserInfo: (state, action: PayloadAction<IUserInfo>) => {
             state.userInfo = action.payload;
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(getMeAsync.fulfilled, (state, action) => {
+            console.log("action.payload", action.payload);
+            const { data } = action.payload;
+            const { id, username, role, phone } = data || {};
+            state.userInfo.id = id;
+            state.userInfo.username = username;
+            state.userInfo.role = role;
+            state.userInfo.phone = phone;
+        });
     },
 });
 
