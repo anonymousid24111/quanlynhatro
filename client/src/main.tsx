@@ -10,6 +10,8 @@ import Lessor from "./pages/lessor/Lessor";
 import Login from "./pages/login/Login";
 import SignUp from "./pages/signup/SignUp";
 import Tenant from "./pages/tenant/Tenant";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 const router = createBrowserRouter([
     {
@@ -40,7 +42,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <Provider store={store}>
+            <RouterProvider router={router} />
+        </Provider>
         <ToastContainer position="top-right" autoClose={3000} />
     </React.StrictMode>
 );

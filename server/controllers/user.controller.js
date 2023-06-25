@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const { pool } = require("../db");
 const jwt = require("jsonwebtoken");
 const UserProfile = require("../models/userprofile.model");
+const { USER_ROLE } = require("../consts/user.const");
 
 const createUser = async (req, res) => {
     const { username, phone, password } = req.body;
@@ -65,17 +66,18 @@ const createUser = async (req, res) => {
             username,
             phone,
             password: hashedPassword,
-            role: 0,
+            role: USER_ROLE.Tenant,
         });
-        const userId = result.id;
+        const { id, role, username } = result;
 
         // Generate jwt token
-        const token = jwt.sign({ userId }, "secret");
+        const token = jwt.sign({ id, role, username }, "secret");
 
         res.json({
             data: {
                 token,
                 username,
+                role,
             },
         });
     } catch (err) {
@@ -94,12 +96,12 @@ const login = async (req, res) => {
         return;
     }
     // const result = await pool.query("SELECT * FROM userprofile WHERE userprofile.phone = $1", [phone]);
-    const result = await UserProfile.findOne({
+    const user = await UserProfile.findOne({
         where: {
             phone,
         },
     });
-    const user = result;
+    const { id, role, username } = user;
 
     if (!user) {
         return res.json({
@@ -117,12 +119,11 @@ const login = async (req, res) => {
     }
 
     // Generate jwt token
-    const token = jwt.sign({ userId: user.id }, "secret");
+    const token = jwt.sign({ id, role, username }, "secret");
 
-    res.json({ data: { token, username: user.username, id: user.id } });
+    res.json({ data: { token, id, role, username, phone } });
 };
 const getUserById = async (req, res) => {
-    console.log("req.decoded", req.decoded);
     const { id } = req.params;
     if (!id) {
         res.json({
@@ -136,6 +137,7 @@ const getUserById = async (req, res) => {
             id,
         },
     });
+    user.password = undefined;
     // const user = result.rows[0];
 
     if (!user) {
@@ -146,17 +148,14 @@ const getUserById = async (req, res) => {
 
     res.json({
         data: {
-            user: {
-                ...user,
-                password: undefined,
-            },
+            user,
         },
     });
 };
 const getMe = async (req, res) => {
     try {
-        const { userId } = req.decoded;
-        if (!userId) {
+        const { id } = req.decoded;
+        if (!id) {
             res.json({
                 error: "Missing id",
             });
@@ -179,8 +178,10 @@ const getMe = async (req, res) => {
         res.json({
             data: {
                 user: {
-                    ...user,
-                    password: undefined,
+                    id: user.id,
+                    username: user.username,
+                    phone: user.phone,
+                    role: user.role,
                 },
             },
         });

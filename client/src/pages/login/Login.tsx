@@ -15,6 +15,9 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import fetchHandler from "../../config/axios";
 import { toast } from "react-toastify";
+import { useAppDispatch } from "../../redux/hooks";
+import { setUserInfo } from "../auth/authSlice";
+import { UserRole } from "../auth/models";
 
 function Copyright(props: any) {
     return (
@@ -39,6 +42,7 @@ const defaultTheme = createTheme();
 
 export default function Login() {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -47,13 +51,32 @@ export default function Login() {
             password: formData.get("password"),
         });
         const { data, error } = res?.data || {};
-        const { token } = data || {};
+        const { token, id, username, role, phone } = data || {};
         if (error) {
             toast.error(error);
         }
         if (token) {
             localStorage.setItem("token", token);
-            navigate("/");
+            dispatch(
+                setUserInfo({
+                    id,
+                    username,
+                    role,
+                    phone,
+                })
+            );
+            if (role === UserRole.Tenant) {
+                navigate("/tenant");
+            }
+            if (role === UserRole.Lessor) {
+                navigate("/lessor");
+            }
+            if (role === UserRole.Admin) {
+                navigate("/admin");
+            }
+            if (role === UserRole.Guest) {
+                navigate("/");
+            }
         }
     };
 
