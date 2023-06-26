@@ -45,7 +45,16 @@ module.exports = {
             status: Sequelize.INTEGER,
             cost: Sequelize.INTEGER,
             maxAllow: Sequelize.INTEGER,
-            // apartment: Sequelize.INTEGER,
+            apartmentId: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                references: {
+                    model: "apartments",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
         });
     },
 

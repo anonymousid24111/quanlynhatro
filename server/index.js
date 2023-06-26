@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const userRoute = require("./routers/user.route");
+const apartmentRoute = require("./routers/apartment.route");
+const roomRoute = require("./routers/room.route");
 const { sequelize } = require("./db");
 try {
     sequelize.authenticate();
@@ -28,5 +30,7 @@ app.use((req, res, next) => {
     next();
 });
 app.use("/api/user", userRoute);
+app.use("/api/apartment", apartmentRoute);
+app.use("/api/room", roomRoute);
 // Start server
 app.listen(3000, () => console.log("Server started on port 3000"));
