@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "../pages/auth/authSlice";
-import adminAlice from "../pages/admin/adminAlice";
+import adminAlice from "../pages/admin/adminSlice";
 // ...
 
 export const store = configureStore({

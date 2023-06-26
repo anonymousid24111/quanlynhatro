@@ -10,4 +10,5 @@ export interface IUserInfo {
     username: string;
     phone: string;
     role: UserRole;
+    password?: string;
 }

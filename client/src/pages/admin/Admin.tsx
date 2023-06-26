@@ -4,6 +4,7 @@ import { useAppDispatch } from "../../redux/hooks";
 import { getMeAsync } from "../auth/authAction";
 import { UserRole } from "../auth/models";
 import { useEffect } from "react";
+import useGetMe from "../../hooks/useGetMe";
 
 const Admin = () => {
     const pages: INavItem[] = [
@@ -31,30 +32,7 @@ const Admin = () => {
         },
     ];
 
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-    const fetchMe = async () => {
-        const { payload } = await dispatch(getMeAsync());
-        const { data } = payload;
-        const { role } = data || {};
-
-        if (role === UserRole.Tenant) {
-            navigate("/tenant");
-        }
-        if (role === UserRole.Lessor) {
-            navigate("/lessor");
-        }
-        if (role === UserRole.Admin) {
-            navigate("/admin");
-        }
-        if (role === UserRole.Guest) {
-            navigate("/");
-        }
-    };
-
-    useEffect(() => {
-        fetchMe();
-    }, []);
+    useGetMe();
 
     return (
         <>

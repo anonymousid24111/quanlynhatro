@@ -18,8 +18,8 @@ const initialState: AuthState = {
     },
 };
 
-export const counterSlice = createSlice({
-    name: "counter",
+export const authSlice = createSlice({
+    name: "auth",
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
@@ -40,8 +40,8 @@ export const counterSlice = createSlice({
     },
 });
 
-export const { setUserInfo } = counterSlice.actions;
+export const { setUserInfo } = authSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 
-export default counterSlice.reducer;
+export default authSlice.reducer;
