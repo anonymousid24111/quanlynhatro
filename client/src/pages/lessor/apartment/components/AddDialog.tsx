@@ -81,6 +81,16 @@ export default function AddDialog(props: IAddDialogProps) {
                         id="roomCount"
                         autoComplete="off"
                     />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        type="number"
+                        name="cost"
+                        label="Giá"
+                        id="cost"
+                        autoComplete="off"
+                    />
                     {/* <FormControl margin="normal" fullWidth>
                         <InputLabel id="demo-simple-select-label">
                             Role

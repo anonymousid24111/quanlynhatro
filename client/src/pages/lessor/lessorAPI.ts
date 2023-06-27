@@ -11,5 +11,5 @@ export const addApartment = (apartment: IApartment) => {
     return fetchHandler.post("/apartment/create", apartment);
 };
 export const updateApartment = (apartment: IApartment) => {
-    return fetchHandler.post("/apartment/" + apartment.id, apartment);
+    return fetchHandler.post("/apartment/update/" + apartment.id, apartment);
 };

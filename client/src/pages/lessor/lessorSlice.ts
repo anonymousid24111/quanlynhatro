@@ -78,7 +78,11 @@ export const lessorSlice = createSlice({
                 state.apartmentListPage.items = data || [];
             })
             .addCase(deleteApartmentAsync.fulfilled, (state, action) => {
-                state.isOpenDialogConfirmDelete = false;
+                if (action.payload?.error) {
+                    toast.error(action.payload.error);
+                } else {
+                    state.isOpenDialogConfirmDelete = false;
+                }
             })
             .addCase(addApartmentAsync.fulfilled, (state, action) => {
                 console.log("action.payload", action.payload);

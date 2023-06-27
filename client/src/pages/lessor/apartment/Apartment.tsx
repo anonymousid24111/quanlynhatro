@@ -5,6 +5,7 @@ import { Breadcrumbs, Button, Link, Stack, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { PromiseStatus } from "../../../utils";
 import WarningDialog from "../../admin/usermangement/components/WarningDialog";
 import {
     addApartmentAsync,
@@ -13,11 +14,16 @@ import {
     updateApartmentAsync,
 } from "../lessorAction";
 import {
+    setEditDialog,
     setIsOpenAddDialog,
     setIsOpenDialogConfirmDelete,
+    setIsOpenEditDialog,
+    setSelectedApartment,
 } from "../lessorSlice";
 import { IApartment } from "../models";
 import AddDialog from "./components/AddDialog";
+import EditDialog from "./components/EditDialog";
+import { toast } from "react-toastify";
 
 const Apartment = () => {
     const dispatch = useAppDispatch();
@@ -35,25 +41,26 @@ const Apartment = () => {
     }, []);
     const handleEditClick = (id: number) => () => {
         // console.log("id", id);
-        // const currentUser = users.find((row: IUserInfo) => row.id === id);
-        // if (currentUser) {
-        //     dispatch(setSelectedUser(currentUser));
-        //     dispatch(
-        //         setEditDialog({
-        //             isOpen: true,
-        //             status: PromiseStatus.Fulfilled,
-        //             user: currentUser,
-        //         })
-        //     );
-        // }
+        const currentApartment = items.find((row: IApartment) => row.id === id);
+        if (currentApartment) {
+            dispatch(setSelectedApartment(currentApartment));
+            dispatch(
+                setEditDialog({
+                    isOpen: true,
+                    status: PromiseStatus.Fulfilled,
+                    apartment: currentApartment,
+                })
+            );
+        }
     };
 
     const handleDeleteClick = (id: number) => () => {
-        // const currentUser = users.find((row: IUserInfo) => row.id === id);
-        // if (currentUser) {
-        //     dispatch(setSelectedUser(currentUser));
-        //     dispatch(setIsOpenDialogConfirmDelete(true));
-        // }
+        const currentApartment = items.find((row: IApartment) => row.id === id);
+
+        if (currentApartment) {
+            dispatch(setSelectedApartment(currentApartment));
+            dispatch(setIsOpenDialogConfirmDelete(true));
+        }
     };
     const columns = [
         { field: "id", headerName: "ID", width: 70 },
@@ -105,23 +112,23 @@ const Apartment = () => {
     const onDeleteUser = async (id: number) => {
         if (id) {
             const res = await dispatch(deleteApartmentAsync(id));
-            if (res.payload.data.user) {
+            if (res.payload.data?.apartment) {
                 dispatch(getApartmentsAsync());
             }
         }
     };
 
-    const onAddUser = async (user: IApartment) => {
-        console.log("user", user);
-        const res = await dispatch(addApartmentAsync(user));
-        if (res.payload.data?.token) {
+    const onAddUser = async (apartment: IApartment) => {
+        console.log("user", apartment);
+        const res = await dispatch(addApartmentAsync(apartment));
+        if (res.payload.data?.id) {
             dispatch(getApartmentsAsync());
         }
     };
-    const onEditUser = async (user: IApartment) => {
-        console.log("user", user);
-        const res = await dispatch(updateApartmentAsync(user));
-        if (res.payload.data?.token) {
+    const onEditUser = async (apartment: IApartment) => {
+        console.log("user", apartment);
+        const res = await dispatch(updateApartmentAsync(apartment));
+        if (res.payload.data?.[0]) {
             dispatch(getApartmentsAsync());
         }
     };
@@ -138,11 +145,11 @@ const Apartment = () => {
                 onClose={() => dispatch(setIsOpenAddDialog(false))}
                 onSubmit={onAddUser}
             />
-            {/* <EditDialog
+            <EditDialog
                 isOpen={editDialog.isOpen}
                 onClose={() => dispatch(setIsOpenEditDialog(false))}
                 onSubmit={onEditUser}
-            /> */}
+            />
             <Stack direction="row" spacing={2} margin={"8px 12px"}>
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link underline="hover" color="inherit" href="/">
@@ -159,7 +166,7 @@ const Apartment = () => {
                         dispatch(setIsOpenAddDialog(true));
                     }}
                 >
-                    Thêm người dùng
+                    Thêm nhà
                 </Button>
             </Stack>
             <br />

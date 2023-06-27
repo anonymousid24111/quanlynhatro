@@ -92,8 +92,43 @@ const getListApartment = async (req, res) => {
     }
 };
 
+const deleteApartment = async (req, res) => {
+    try {
+        const { id: currentId } = req.decoded;
+        const { id } = req.params;
+        if (!id) {
+            res.json({
+                error: "Missing id",
+            });
+            return;
+        }
+        const apartment = await ApartmentModel.destroy({
+            where: {
+                id,
+            },
+        });
+
+        if (!apartment) {
+            return res.json({
+                error: "Current apartment not found",
+            });
+        }
+
+        res.json({
+            data: {
+                apartment,
+            },
+        });
+    } catch (error) {
+        res.json({
+            error: error,
+        });
+    }
+};
+
 module.exports = {
     createApartment,
     getListApartment,
     updateApartment,
+    deleteApartment,
 };
