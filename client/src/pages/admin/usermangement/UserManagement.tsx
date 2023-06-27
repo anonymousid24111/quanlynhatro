@@ -1,8 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
-import CancelIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
 import { Breadcrumbs, Button, Link, Stack, Typography } from "@mui/material";
 import {
     DataGrid,
@@ -12,6 +10,7 @@ import {
 } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { PromiseStatus } from "../../../utils";
 import { IUserInfo, UserRole } from "../../auth/models";
 import {
     addTetantAsync,
@@ -27,9 +26,8 @@ import {
     setSelectedUser,
 } from "../adminSlice";
 import AddDialog from "./components/AddDialog";
-import WarningDialog from "./components/WarningDialog";
 import EditDialog from "./components/EditDialog";
-import { PromiseStatus } from "../../../utils";
+import WarningDialog from "./components/WarningDialog";
 
 export default function UserManagement() {
     const dispatch = useAppDispatch();
@@ -202,7 +200,10 @@ export default function UserManagement() {
                 isOpen={isOpenDialogConfirmDelete}
                 onClose={() => dispatch(setIsOpenDialogConfirmDelete(false))}
                 onSubmit={onDeleteUser}
-                user={selectedUser}
+                seletedItem={{
+                    id: selectedUser?.id || 0,
+                    name: selectedUser?.username || "",
+                }}
             />
             <AddDialog
                 isOpen={addDialog.isOpen}
