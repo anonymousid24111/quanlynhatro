@@ -17,7 +17,7 @@ export interface IAddDialogProps {
 
 export default function EditDialog(props: IAddDialogProps) {
     const { isOpen, onClose, onSubmit } = props;
-    const { apartment } = useAppSelector((state) => state.lessor.editDialog);
+    const { apartment } = useAppSelector((state) => state.lessor.editApartmentDialog);
 
     const handleClose = () => {
         onClose();

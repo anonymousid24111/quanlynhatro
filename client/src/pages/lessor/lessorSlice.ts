@@ -8,7 +8,7 @@ import {
     getApartmentsAsync,
     updateApartmentAsync,
 } from "./lessorAction";
-import { IAddDialog, IApartment } from "./models";
+import { IAddApartmentDialog, IAddRoomDialog, IApartment } from "./models";
 import { defaultApartment } from "./utils";
 
 // Define a type for the slice state
@@ -19,8 +19,10 @@ interface AdminState {
     };
     selectedApartment?: IApartment;
     isOpenDialogConfirmDelete: boolean;
-    addDialog: IAddDialog;
-    editDialog: IAddDialog;
+    addApartmentDialog: IAddApartmentDialog;
+    editApartmentDialog: IAddApartmentDialog;
+    addRoomDialog: IAddRoomDialog;
+    editRoomDialog: IAddRoomDialog;
 }
 
 // Define the initial state using that type
@@ -29,15 +31,25 @@ const initialState: AdminState = {
         items: [],
     },
     isOpenDialogConfirmDelete: false,
-    addDialog: {
+    addApartmentDialog: {
         isOpen: false,
         status: PromiseStatus.Fulfilled,
         apartment: defaultApartment,
     },
-    editDialog: {
+    editApartmentDialog: {
         isOpen: false,
         status: PromiseStatus.Fulfilled,
         apartment: defaultApartment,
+    },
+    addRoomDialog: {
+        isOpen: false,
+        status: PromiseStatus.Fulfilled,
+        room: defaultApartment,
+    },
+    editRoomDialog: {
+        isOpen: false,
+        status: PromiseStatus.Fulfilled,
+        room: defaultApartment,
     },
 };
 
@@ -59,16 +71,16 @@ export const lessorSlice = createSlice({
             state.isOpenDialogConfirmDelete = action.payload;
         },
         setIsOpenAddDialog: (state, action: PayloadAction<boolean>) => {
-            state.addDialog.isOpen = action.payload;
+            state.addApartmentDialog.isOpen = action.payload;
         },
-        setAddDialog: (state, action: PayloadAction<IAddDialog>) => {
-            state.addDialog = action.payload;
+        setAddDialog: (state, action: PayloadAction<IAddApartmentDialog>) => {
+            state.addApartmentDialog = action.payload;
         },
         setIsOpenEditDialog: (state, action: PayloadAction<boolean>) => {
-            state.editDialog.isOpen = action.payload;
+            state.editApartmentDialog.isOpen = action.payload;
         },
-        setEditDialog: (state, action: PayloadAction<IAddDialog>) => {
-            state.editDialog = action.payload;
+        setEditDialog: (state, action: PayloadAction<IAddApartmentDialog>) => {
+            state.editApartmentDialog = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -89,7 +101,7 @@ export const lessorSlice = createSlice({
                 if (action.payload?.error) {
                     toast.error(action.payload.error);
                 } else {
-                    state.addDialog = {
+                    state.addApartmentDialog = {
                         isOpen: false,
                         status: PromiseStatus.Fulfilled,
                         apartment: defaultApartment,
@@ -101,7 +113,7 @@ export const lessorSlice = createSlice({
                 if (action.payload?.error) {
                     toast.error(action.payload.error);
                 } else {
-                    state.editDialog = {
+                    state.editApartmentDialog = {
                         isOpen: false,
                         status: PromiseStatus.Fulfilled,
                         apartment: defaultApartment,

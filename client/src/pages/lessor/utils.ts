@@ -8,3 +8,11 @@ export const defaultApartment: IApartment = {
     roomCount: 0,
     status: ApartmentStatus.Available,
 };
+export const defaultRoom: IApartment = {
+    id: 0,
+    address: "",
+    cost: 0,
+    name: "",
+    roomCount: 0,
+    status: ApartmentStatus.Available,
+};

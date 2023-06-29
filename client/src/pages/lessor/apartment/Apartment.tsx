@@ -30,8 +30,8 @@ const Apartment = () => {
     const {
         isOpenDialogConfirmDelete,
         selectedApartment,
-        addDialog,
-        editDialog,
+        addApartmentDialog: addDialog,
+        editApartmentDialog: editDialog,
         apartmentListPage,
     } = useAppSelector((state) => state.lessor);
     const { items } = apartmentListPage || {};

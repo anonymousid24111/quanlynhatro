@@ -15,8 +15,14 @@ export interface IApartment {
     cost: number;
 }
 
-export interface IAddDialog {
+export interface IAddApartmentDialog {
     isOpen: boolean;
     apartment: IApartment;
+    status: PromiseStatus;
+}
+
+export interface IAddRoomDialog {
+    isOpen: boolean;
+    room: IApartment;
     status: PromiseStatus;
 }
