@@ -8,39 +8,142 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { PromiseStatus } from "../../../utils";
 import WarningDialog from "../../admin/usermangement/components/WarningDialog";
 import {
-    addApartmentAsync,
-    deleteApartmentAsync,
-    getApartmentsAsync,
-    updateApartmentAsync,
+    addRoomAsync,
+    deleteRoomAsync,
+    getRoomsAsync,
+    updateRoomAsync,
 } from "../lessorAction";
 import {
-    setEditDialog,
-    setIsOpenAddDialog,
+    setEditRoomDialog,
+    setIsOpenAddRoomDialog,
     setIsOpenDialogConfirmDelete,
     setIsOpenEditDialog,
-    setSelectedApartment,
+    setSelectedRoom,
 } from "../lessorSlice";
-import { IApartment } from "../models";
+import { IRoom } from "../models";
 import AddDialog from "./components/AddDialog";
 import EditDialog from "./components/EditDialog";
-import { toast } from "react-toastify";
 
 function Room() {
+    const {
+        addRoomDialog,
+        editRoomDialog,
+        isOpenDialogConfirmDelete,
+        roomListPage,
+        selectedRoom,
+    } = useAppSelector((state) => state.lessor);
+    const { items } = roomListPage;
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+        dispatch(getRoomsAsync());
+    }, []);
+    const handleEditClick = (id: number) => () => {
+        const currentRoom = items.find((row: IRoom) => row.id === id);
+        if (currentRoom) {
+            dispatch(setSelectedRoom(currentRoom));
+            dispatch(
+                setEditRoomDialog({
+                    isOpen: true,
+                    status: PromiseStatus.Fulfilled,
+                    room: currentRoom,
+                })
+            );
+        }
+    };
+
+    const handleDeleteClick = (id: number) => () => {
+        const currentRoom = items.find((row: IRoom) => row.id === id);
+
+        if (currentRoom) {
+            dispatch(setSelectedRoom(currentRoom));
+            dispatch(setIsOpenDialogConfirmDelete(true));
+        }
+    };
+    const columns = [
+        { field: "id", headerName: "ID", width: 70 },
+        {
+            field: "name",
+            headerName: "Tên",
+            width: 200,
+        },
+        {
+            field: "address",
+            headerName: "Địa chỉ",
+            width: 150,
+        },
+        {
+            field: "roomCount",
+            headerName: "Số phòng",
+            width: 160,
+        },
+        {
+            field: "cost",
+            headerName: "Giá",
+            width: 160,
+        },
+        {
+            field: "actions",
+            type: "actions",
+            headerName: "Actions",
+            width: 100,
+            cellClassName: "actions",
+            getActions: ({ id }: any) => {
+                return [
+                    <GridActionsCellItem
+                        icon={<EditIcon />}
+                        label="Edit"
+                        className="textPrimary"
+                        onClick={handleEditClick(id)}
+                        color="inherit"
+                    />,
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={handleDeleteClick(id)}
+                        color="inherit"
+                    />,
+                ];
+            },
+        },
+    ];
+    const onDeleteUser = async (id: number) => {
+        if (id) {
+            const res = await dispatch(deleteRoomAsync(id));
+            if (res.payload.data?.room) {
+                dispatch(getRoomsAsync());
+            }
+        }
+    };
+
+    const onAddUser = async (room: IRoom) => {
+        console.log("user", room);
+        const res = await dispatch(addRoomAsync(room));
+        if (res.payload.data?.id) {
+            dispatch(getRoomsAsync());
+        }
+    };
+    const onEditUser = async (room: IRoom) => {
+        console.log("user", room);
+        const res = await dispatch(updateRoomAsync(room));
+        if (res.payload.data?.[0]) {
+            dispatch(getRoomsAsync());
+        }
+    };
     return (
         <div style={{ height: 400, width: "100%" }}>
             <WarningDialog
                 isOpen={isOpenDialogConfirmDelete}
                 onClose={() => dispatch(setIsOpenDialogConfirmDelete(false))}
                 onSubmit={onDeleteUser}
-                seletedItem={selectedApartment}
+                seletedItem={selectedRoom}
             />
             <AddDialog
-                isOpen={addDialog.isOpen}
-                onClose={() => dispatch(setIsOpenAddDialog(false))}
+                isOpen={addRoomDialog.isOpen}
+                onClose={() => dispatch(setIsOpenAddRoomDialog(false))}
                 onSubmit={onAddUser}
             />
             <EditDialog
-                isOpen={editDialog.isOpen}
+                isOpen={editRoomDialog.isOpen}
                 onClose={() => dispatch(setIsOpenEditDialog(false))}
                 onSubmit={onEditUser}
             />
@@ -49,7 +152,7 @@ function Room() {
                     <Link underline="hover" color="inherit" href="/">
                         Lessor
                     </Link>
-                    <Typography color="text.primary">Quản lý nhà</Typography>
+                    <Typography color="text.primary">Quản lý phòng</Typography>
                 </Breadcrumbs>
             </Stack>
             <Stack direction="row" spacing={2} margin={"8px 12px"}>
@@ -57,10 +160,10 @@ function Room() {
                     variant="contained"
                     endIcon={<AddIcon />}
                     onClick={() => {
-                        dispatch(setIsOpenAddDialog(true));
+                        dispatch(setIsOpenAddRoomDialog(true));
                     }}
                 >
-                    Thêm nhà
+                    Thêm phòng
                 </Button>
             </Stack>
             <br />

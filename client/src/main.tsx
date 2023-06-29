@@ -12,6 +12,7 @@ import Guest from "./pages/guest/Guest";
 import Lessor from "./pages/lessor/Lessor";
 import Apartment from "./pages/lessor/apartment/Apartment";
 import Report from "./pages/lessor/report/Report";
+import RoomLessor from "./pages/lessor/room/Room";
 import Login from "./pages/login/Login";
 import SignUp from "./pages/signup/SignUp";
 import Tenant from "./pages/tenant/Tenant";
@@ -88,7 +89,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "room",
-                element: <Room />,
+                element: <RoomLessor />,
             },
             {
                 path: "profile",

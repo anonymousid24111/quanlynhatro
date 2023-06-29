@@ -15,7 +15,7 @@ import {
 } from "../lessorAction";
 import {
     setEditDialog,
-    setIsOpenAddDialog,
+    setIsOpenAddApartmentDialog,
     setIsOpenDialogConfirmDelete,
     setIsOpenEditDialog,
     setSelectedApartment,
@@ -23,7 +23,6 @@ import {
 import { IApartment } from "../models";
 import AddDialog from "./components/AddDialog";
 import EditDialog from "./components/EditDialog";
-import { toast } from "react-toastify";
 
 const Apartment = () => {
     const dispatch = useAppDispatch();
@@ -142,7 +141,7 @@ const Apartment = () => {
             />
             <AddDialog
                 isOpen={addDialog.isOpen}
-                onClose={() => dispatch(setIsOpenAddDialog(false))}
+                onClose={() => dispatch(setIsOpenAddApartmentDialog(false))}
                 onSubmit={onAddUser}
             />
             <EditDialog
@@ -163,7 +162,7 @@ const Apartment = () => {
                     variant="contained"
                     endIcon={<AddIcon />}
                     onClick={() => {
-                        dispatch(setIsOpenAddDialog(true));
+                        dispatch(setIsOpenAddApartmentDialog(true));
                     }}
                 >
                     Thêm nhà

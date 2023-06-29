@@ -6,10 +6,16 @@ import {
     addApartmentAsync,
     deleteApartmentAsync,
     getApartmentsAsync,
+    getRoomsAsync,
     updateApartmentAsync,
 } from "./lessorAction";
-import { IAddApartmentDialog, IAddRoomDialog, IApartment } from "./models";
-import { defaultApartment } from "./utils";
+import {
+    IAddApartmentDialog,
+    IAddRoomDialog,
+    IApartment,
+    IRoom,
+} from "./models";
+import { defaultApartment, defaultRoom } from "./utils";
 
 // Define a type for the slice state
 
@@ -17,7 +23,11 @@ interface AdminState {
     apartmentListPage: {
         items: IApartment[];
     };
+    roomListPage: {
+        items: IRoom[];
+    };
     selectedApartment?: IApartment;
+    selectedRoom?: IRoom;
     isOpenDialogConfirmDelete: boolean;
     addApartmentDialog: IAddApartmentDialog;
     editApartmentDialog: IAddApartmentDialog;
@@ -28,6 +38,9 @@ interface AdminState {
 // Define the initial state using that type
 const initialState: AdminState = {
     apartmentListPage: {
+        items: [],
+    },
+    roomListPage: {
         items: [],
     },
     isOpenDialogConfirmDelete: false,
@@ -44,12 +57,12 @@ const initialState: AdminState = {
     addRoomDialog: {
         isOpen: false,
         status: PromiseStatus.Fulfilled,
-        room: defaultApartment,
+        room: defaultRoom,
     },
     editRoomDialog: {
         isOpen: false,
         status: PromiseStatus.Fulfilled,
-        room: defaultApartment,
+        room: defaultRoom,
     },
 };
 
@@ -61,8 +74,14 @@ export const lessorSlice = createSlice({
         setApartmentListPage: (state, action: PayloadAction<IApartment[]>) => {
             state.apartmentListPage.items = action.payload;
         },
+        setRoomListPage: (state, action: PayloadAction<IRoom[]>) => {
+            state.roomListPage.items = action.payload;
+        },
         setSelectedApartment: (state, action: PayloadAction<IApartment>) => {
             state.selectedApartment = action.payload;
+        },
+        setSelectedRoom: (state, action: PayloadAction<IRoom>) => {
+            state.selectedRoom = action.payload;
         },
         setIsOpenDialogConfirmDelete: (
             state,
@@ -70,17 +89,32 @@ export const lessorSlice = createSlice({
         ) => {
             state.isOpenDialogConfirmDelete = action.payload;
         },
-        setIsOpenAddDialog: (state, action: PayloadAction<boolean>) => {
+        setIsOpenAddApartmentDialog: (
+            state,
+            action: PayloadAction<boolean>
+        ) => {
             state.addApartmentDialog.isOpen = action.payload;
+        },
+        setIsOpenAddRoomDialog: (state, action: PayloadAction<boolean>) => {
+            state.addRoomDialog.isOpen = action.payload;
         },
         setAddDialog: (state, action: PayloadAction<IAddApartmentDialog>) => {
             state.addApartmentDialog = action.payload;
         },
+        setAddRoomDialog: (state, action: PayloadAction<IAddRoomDialog>) => {
+            state.addRoomDialog = action.payload;
+        },
         setIsOpenEditDialog: (state, action: PayloadAction<boolean>) => {
             state.editApartmentDialog.isOpen = action.payload;
         },
+        setIsOpenEditRoomDialog: (state, action: PayloadAction<boolean>) => {
+            state.editRoomDialog.isOpen = action.payload;
+        },
         setEditDialog: (state, action: PayloadAction<IAddApartmentDialog>) => {
             state.editApartmentDialog = action.payload;
+        },
+        setEditRoomDialog: (state, action: PayloadAction<IAddRoomDialog>) => {
+            state.editRoomDialog = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -88,6 +122,10 @@ export const lessorSlice = createSlice({
             .addCase(getApartmentsAsync.fulfilled, (state, action) => {
                 const { data } = action.payload || [];
                 state.apartmentListPage.items = data || [];
+            })
+            .addCase(getRoomsAsync.fulfilled, (state, action) => {
+                const { data } = action.payload || [];
+                state.roomListPage.items = data || [];
             })
             .addCase(deleteApartmentAsync.fulfilled, (state, action) => {
                 if (action.payload?.error) {
@@ -127,10 +165,16 @@ export const {
     setIsOpenDialogConfirmDelete,
     setSelectedApartment,
     setAddDialog,
-    setIsOpenAddDialog,
+    setIsOpenAddApartmentDialog,
     setIsOpenEditDialog,
     setEditDialog,
     setApartmentListPage,
+    setAddRoomDialog,
+    setEditRoomDialog,
+    setIsOpenAddRoomDialog,
+    setIsOpenEditRoomDialog,
+    setRoomListPage,
+    setSelectedRoom,
 } = lessorSlice.actions;
 
 export default lessorSlice.reducer;
