@@ -33,6 +33,16 @@ module.exports = {
             roomCount: Sequelize.INTEGER,
             status: Sequelize.INTEGER,
             cost: Sequelize.INTEGER,
+            userprofileId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "userprofiles",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
         });
         await queryInterface.createTable("rooms", {
             id: {
@@ -45,7 +55,16 @@ module.exports = {
             status: Sequelize.INTEGER,
             cost: Sequelize.INTEGER,
             maxAllow: Sequelize.INTEGER,
-            // apartment: Sequelize.INTEGER,
+            apartmentId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "apartments",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
         });
     },
 
@@ -56,8 +75,8 @@ module.exports = {
          * Example:
          * await queryInterface.dropTable('userprofiles');
          */
-        await queryInterface.dropTable("userprofiles");
-        await queryInterface.dropTable("apartments");
         await queryInterface.dropTable("rooms");
+        await queryInterface.dropTable("apartments");
+        await queryInterface.dropTable("userprofiles");
     },
 };
