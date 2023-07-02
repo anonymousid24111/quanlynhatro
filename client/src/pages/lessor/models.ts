@@ -24,7 +24,7 @@ export interface IRoom {
     id: number;
     name: string;
     address: string;
-    roomCount: number;
+    maxAllow: number;
     status: RoomStatus;
     cost: number;
 }

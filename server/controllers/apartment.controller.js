@@ -11,6 +11,8 @@ const createApartment = async (req, res) => {
     // Hash and salt password
 
     try {
+        const { id } = req.decoded;
+        console.log('req.decoded', req.decoded)
         const { name, address, cost, roomCount } = req.body;
         // validate data
         if (!name || !address || !cost || !roomCount) {
@@ -26,6 +28,7 @@ const createApartment = async (req, res) => {
             cost,
             roomCount,
             status: 0,
+            userprofileId: id,
         });
         res.json({
             data: newApartment,
@@ -81,6 +84,21 @@ const updateApartment = async (req, res) => {
 const getListApartment = async (req, res) => {
     try {
         const newApartment = await ApartmentModel.findAll();
+        res.json({
+            data: newApartment,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: err,
+        });
+    }
+};
+const getReport = async (req, res) => {
+    try {
+        // const newApartment = await ApartmentModel.findAndCountAll({
+        //     where:
+        // });
         res.json({
             data: newApartment,
         });

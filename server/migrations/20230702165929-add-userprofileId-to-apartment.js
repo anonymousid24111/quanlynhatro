@@ -1,10 +1,10 @@
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        // await queryInterface.addColumn("rooms", "apartmentId", {
+        // await queryInterface.addColumn("apartments", "userprofileId", {
         //     type: Sequelize.INTEGER,
         //     allowNull: true,
         //     references: {
-        //         model: "apartments",
+        //         model: "userprofiles",
         //         key: "id",
         //     },
         //     onUpdate: "CASCADE",
@@ -13,6 +13,6 @@ module.exports = {
     },
 
     down: async (queryInterface, Sequelize) => {
-        // await queryInterface.removeColumn("rooms", "apartmentId");
+        // await queryInterface.removeColumn("apartments", "userprofileId");
     },
 };

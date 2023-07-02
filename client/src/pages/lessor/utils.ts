@@ -13,6 +13,6 @@ export const defaultRoom: IRoom = {
     address: "",
     cost: 0,
     name: "",
-    roomCount: 0,
+    maxAllow: 0,
     status: RoomStatus.Available,
 };

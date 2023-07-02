@@ -71,7 +71,7 @@ const Apartment = () => {
         {
             field: "address",
             headerName: "Địa chỉ",
-            width: 150,
+            width: 350,
         },
         {
             field: "roomCount",

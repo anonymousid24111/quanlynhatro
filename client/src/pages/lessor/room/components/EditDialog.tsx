@@ -28,7 +28,7 @@ export default function EditDialog(props: IAddDialogProps) {
         const formData = new FormData(event.currentTarget);
         onSubmit({
             address: formData.get("address") as string,
-            roomCount: Number(formData.get("roomCount")) || 0,
+            maxAllow: Number(formData.get("maxAllow")) || 0,
             id: room.id,
             name: formData.get("name") as string,
             cost: Number(formData.get("cost")) || 0,
@@ -75,11 +75,11 @@ export default function EditDialog(props: IAddDialogProps) {
                         required
                         fullWidth
                         type="number"
-                        name="roomCount"
-                        label="Số phòng"
-                        id="roomCount"
+                        name="maxAllow"
+                        label="Số người tối đa"
+                        id="maxAllow"
                         autoComplete="off"
-                        defaultValue={room.roomCount}
+                        defaultValue={room.maxAllow}
                     />
                     <TextField
                         margin="normal"

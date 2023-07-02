@@ -5,9 +5,11 @@ import { PromiseStatus } from "../../utils";
 import {
     addApartmentAsync,
     deleteApartmentAsync,
+    deleteRoomAsync,
     getApartmentsAsync,
     getRoomsAsync,
     updateApartmentAsync,
+    updateRoomAsync,
 } from "./lessorAction";
 import {
     IAddApartmentDialog,
@@ -134,6 +136,13 @@ export const lessorSlice = createSlice({
                     state.isOpenDialogConfirmDelete = false;
                 }
             })
+            .addCase(deleteRoomAsync.fulfilled, (state, action) => {
+                if (action.payload?.error) {
+                    toast.error(action.payload.error);
+                } else {
+                    state.isOpenDialogConfirmDelete = false;
+                }
+            })
             .addCase(addApartmentAsync.fulfilled, (state, action) => {
                 console.log("action.payload", action.payload);
                 if (action.payload?.error) {
@@ -155,6 +164,18 @@ export const lessorSlice = createSlice({
                         isOpen: false,
                         status: PromiseStatus.Fulfilled,
                         apartment: defaultApartment,
+                    };
+                }
+            })
+            .addCase(updateRoomAsync.fulfilled, (state, action) => {
+                console.log("action.payload", action.payload);
+                if (action.payload?.error) {
+                    toast.error(action.payload.error);
+                } else {
+                    state.editRoomDialog = {
+                        isOpen: false,
+                        status: PromiseStatus.Fulfilled,
+                        room: defaultRoom,
                     };
                 }
             });
