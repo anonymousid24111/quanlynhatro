@@ -24,6 +24,7 @@ import {
 import { IApartment } from "../models";
 import AddDialog from "./components/AddDialog";
 import EditDialog from "./components/EditDialog";
+import { cities, districts, wards } from "../../../utils/data";
 
 const Apartment = () => {
     const dispatch = useAppDispatch();
@@ -79,7 +80,20 @@ const Apartment = () => {
         {
             field: "address",
             headerName: "Địa chỉ",
-            width: 350,
+            width: 450,
+            renderCell: (params: any) => {
+                const { address, city_code, district_code, ward_code } =
+                    params.row || {};
+                const addressArray = [
+                    address,
+                    wards.find((item) => item.ward_code === ward_code)?.label,
+                    districts.find(
+                        (item) => item.district_code === district_code
+                    )?.label,
+                    cities.find((item) => item.city_code === city_code)?.label,
+                ].filter((i) => !!i);
+                return addressArray.join(", ");
+            },
         },
         {
             field: "roomCount",

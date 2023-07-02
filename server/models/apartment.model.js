@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const { sequelize } = require("../db");
 const RoomModel = require("./room.model");
+const ServiceModel = require("./service.model");
 
 var ApartmentModel = sequelize.define("apartment", {
     id: {
@@ -21,5 +22,7 @@ var ApartmentModel = sequelize.define("apartment", {
 // define the Apartment-Room association
 ApartmentModel.hasMany(RoomModel, { foreignKey: { allowNull: false } });
 RoomModel.belongsTo(ApartmentModel);
+ApartmentModel.hasMany(ServiceModel, { foreignKey: { allowNull: false } });
+ServiceModel.belongsTo(ApartmentModel);
 
 module.exports = ApartmentModel;

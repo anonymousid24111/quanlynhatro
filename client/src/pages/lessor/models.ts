@@ -11,6 +11,12 @@ export enum RoomStatus {
     Rented = 1,
     OutSoon = 2,
 }
+export interface IService {
+    name: string;
+    cost: number;
+    type: number;
+    unit: string;
+}
 
 export interface IApartment {
     id: number;
@@ -22,6 +28,7 @@ export interface IApartment {
     city_code: number;
     district_code: number;
     ward_code: number;
+    service: IService;
 }
 export interface IRoom {
     id: number;

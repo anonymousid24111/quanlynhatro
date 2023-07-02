@@ -3,7 +3,7 @@
     Giá
     Đơn vị tính
 2. 
-    địa chị chọn tỉnh, huyện, xã
+    địa chị chọn tỉnh, huyện, xã done
     click tên nhà chuyển sang trang quản lý phòng + (id) done
     hiện thị thông tin nhà của chủ trọ done
 

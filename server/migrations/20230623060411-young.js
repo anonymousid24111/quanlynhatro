@@ -69,6 +69,27 @@ module.exports = {
                 onDelete: "CASCADE",
             },
         });
+        await queryInterface.createTable("services", {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            name: Sequelize.STRING,
+            cost: Sequelize.INTEGER,
+            type: Sequelize.INTEGER,
+            unit: Sequelize.STRING,
+            apartmentId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "apartments",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
+        });
     },
 
     async down(queryInterface, Sequelize) {
@@ -78,6 +99,7 @@ module.exports = {
          * Example:
          * await queryInterface.dropTable('userprofiles');
          */
+        await queryInterface.dropTable("services");
         await queryInterface.dropTable("rooms");
         await queryInterface.dropTable("apartments");
         await queryInterface.dropTable("userprofiles");

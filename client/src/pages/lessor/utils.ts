@@ -10,6 +10,12 @@ export const defaultApartment: IApartment = {
     city_code: 0,
     district_code: 0,
     ward_code: 0,
+    service: {
+        name: "",
+        cost: 0,
+        type: 0,
+        unit: "",
+    },
 };
 export const defaultRoom: IRoom = {
     id: 0,

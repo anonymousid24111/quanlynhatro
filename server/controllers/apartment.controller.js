@@ -6,6 +6,7 @@ const { USER_ROLE } = require("../consts/user.const");
 const { Op } = require("sequelize");
 const ApartmentModel = require("../models/apartment.model");
 const RoomModel = require("../models/room.model");
+const ServiceModel = require("../models/service.model");
 
 const createApartment = async (req, res) => {
     // Hash and salt password
@@ -21,6 +22,7 @@ const createApartment = async (req, res) => {
             city_code,
             district_code,
             ward_code,
+            service,
         } = req.body;
         // validate data
         if (!name || !address || !cost || !roomCount) {
@@ -41,6 +43,15 @@ const createApartment = async (req, res) => {
             district_code,
             ward_code,
         });
+        if (service) {
+            const newService = await ServiceModel.create({
+                name: service.name,
+                cost: service.cost,
+                type: service.type,
+                unit: service.unit,
+                apartmentId: newApartment.id,
+            });
+        }
         res.json({
             data: newApartment,
         });
@@ -105,7 +116,9 @@ const updateApartment = async (req, res) => {
 };
 const getListApartment = async (req, res) => {
     try {
-        const newApartment = await ApartmentModel.findAll();
+        const newApartment = await ApartmentModel.findAll({
+            include: ServiceModel,
+        });
         res.json({
             data: newApartment,
         });

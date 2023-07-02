@@ -1,6 +1,7 @@
 import {
     Box,
     FormControl,
+    Grid,
     InputLabel,
     MenuItem,
     Select,
@@ -104,6 +105,12 @@ export default function EditDialog(props: IAddDialogProps) {
             city_code: address.city,
             district_code: address.district,
             ward_code: address.ward,
+            service: {
+                name: formData.get("service_name") as string,
+                cost: Number(formData.get("service_cost")),
+                type: Number(formData.get("service_type")),
+                unit: formData.get("service_unit") as string,
+            },
         });
     };
 
@@ -223,6 +230,49 @@ export default function EditDialog(props: IAddDialogProps) {
                         autoComplete="off"
                         defaultValue={apartment.cost}
                     />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={3}>
+                            <TextField
+                                autoComplete="given-name"
+                                name="service_name"
+                                required
+                                fullWidth
+                                id="service_name"
+                                label="Tên dịch vụ"
+                                autoFocus
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={3}>
+                            <TextField
+                                required
+                                fullWidth
+                                id="service_type"
+                                label="Loại dịch vụ"
+                                name="service_type"
+                                autoComplete="family-name"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={3}>
+                            <TextField
+                                required
+                                fullWidth
+                                id="service_cost"
+                                label="Giá"
+                                name="service_cost"
+                                autoComplete="family-name"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={3}>
+                            <TextField
+                                required
+                                fullWidth
+                                id="service_unit"
+                                label="Đơn vị"
+                                name="service_unit"
+                                autoComplete="family-name"
+                            />
+                        </Grid>
+                    </Grid>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
