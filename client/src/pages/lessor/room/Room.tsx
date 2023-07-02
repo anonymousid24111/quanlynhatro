@@ -93,7 +93,7 @@ function Room() {
         },
         {
             field: "address",
-            headerName: "Địa chỉ",
+            headerName: "Tầng/Khu",
             width: 300,
         },
         {

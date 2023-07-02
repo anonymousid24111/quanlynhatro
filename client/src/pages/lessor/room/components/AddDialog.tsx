@@ -68,7 +68,7 @@ export default function AddDialog(props: IAddDialogProps) {
                         required
                         fullWidth
                         id="address"
-                        label="Địa chỉ"
+                        label="Tầng/Khu"
                         name="address"
                         autoFocus
                         autoComplete="off"
