@@ -1,4 +1,11 @@
-import { Box, SelectChangeEvent } from "@mui/material";
+import {
+    Box,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -6,7 +13,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
-import { UserRole } from "../../../auth/models";
+import { cities, districts, wards } from "../../../../utils/data";
 import { ApartmentStatus, IApartment } from "../../models";
 
 export interface IAddDialogProps {
@@ -15,16 +22,57 @@ export interface IAddDialogProps {
     onSubmit: (apartment: IApartment) => void;
 }
 
+export interface IAddress {
+    city: number;
+    district: number;
+    ward: number;
+}
+
 export default function AddDialog(props: IAddDialogProps) {
     const { isOpen, onClose, onSubmit } = props;
 
     const handleClose = () => {
         onClose();
     };
-    const [role, setRole] = useState<UserRole>(UserRole.Guest);
+    const [districtList, setDistrictList] = useState<any[]>([]);
+    const [wardList, setWardList] = useState<any[]>([]);
 
-    const handleChange = (event: SelectChangeEvent) => {
-        setRole(Number(event.target.value) as UserRole);
+    const [address, setAddress] = useState<IAddress>({
+        city: 0,
+        district: 0,
+        ward: 0,
+    });
+
+    const handleChangeCity = (event: SelectChangeEvent) => {
+        setAddress({
+            ...address,
+            city: Number(event.target.value),
+            district: 0,
+            ward: 0,
+        });
+        setDistrictList(
+            districts.filter(
+                (item) => item.city_code === Number(event.target.value)
+            )
+        );
+    };
+    const handleChangeDistrict = (event: SelectChangeEvent) => {
+        setAddress({
+            ...address,
+            district: Number(event.target.value),
+            ward: 0,
+        });
+        setWardList(
+            wards.filter(
+                (item) => item.district_code === Number(event.target.value)
+            )
+        );
+    };
+    const handleChangeWard = (event: SelectChangeEvent) => {
+        setAddress({
+            ...address,
+            ward: Number(event.target.value),
+        });
     };
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -36,6 +84,9 @@ export default function AddDialog(props: IAddDialogProps) {
             name: formData.get("name") as string,
             cost: Number(formData.get("cost")) || 0,
             status: ApartmentStatus.Available,
+            city_code: address.city,
+            district_code: address.district,
+            ward_code: address.ward,
         });
     };
 
@@ -71,6 +122,63 @@ export default function AddDialog(props: IAddDialogProps) {
                         autoComplete="off"
                         type="text"
                     />
+                    <FormControl margin="normal" fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                            Tỉnh
+                        </InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            label="Role"
+                            onChange={handleChangeCity}
+                        >
+                            {cities.map((item) => {
+                                return (
+                                    <MenuItem value={item.city_code}>
+                                        {item.label}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
+                    <FormControl margin="normal" fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                            Quận/Huyện
+                        </InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            label="Role"
+                            onChange={handleChangeDistrict}
+                        >
+                            {districtList.map((item) => {
+                                return (
+                                    <MenuItem value={item.value}>
+                                        {item.label}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
+                    <FormControl margin="normal" fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                            Xã/Phường
+                        </InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            label="Role"
+                            onChange={handleChangeWard}
+                        >
+                            {wardList.map((item) => {
+                                return (
+                                    <MenuItem value={item.value}>
+                                        {item.label}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
                     <TextField
                         margin="normal"
                         required
@@ -101,26 +209,6 @@ export default function AddDialog(props: IAddDialogProps) {
                         id="service"
                         autoComplete="off"
                     />
-                    {/* <FormControl margin="normal" fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                            Role
-                        </InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={role.toString()}
-                            label="Role"
-                            onChange={handleChange}
-                        >
-                            <MenuItem value={UserRole.Tenant}>
-                                Người thuê
-                            </MenuItem>
-                            <MenuItem value={UserRole.Lessor}>Chủ nhà</MenuItem>
-                            <MenuItem value={UserRole.Admin}>
-                                Quản trị viên
-                            </MenuItem>
-                        </Select>
-                    </FormControl> */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>

@@ -12,8 +12,16 @@ const createApartment = async (req, res) => {
 
     try {
         const { id } = req.decoded;
-        console.log('req.decoded', req.decoded)
-        const { name, address, cost, roomCount } = req.body;
+        console.log("req.decoded", req.decoded);
+        const {
+            name,
+            address,
+            cost,
+            roomCount,
+            city_code,
+            district_code,
+            ward_code,
+        } = req.body;
         // validate data
         if (!name || !address || !cost || !roomCount) {
             res.json({
@@ -29,6 +37,9 @@ const createApartment = async (req, res) => {
             roomCount,
             status: 0,
             userprofileId: id,
+            city_code,
+            district_code,
+            ward_code,
         });
         res.json({
             data: newApartment,
@@ -49,7 +60,15 @@ const updateApartment = async (req, res) => {
             });
             return;
         }
-        const { name, address, cost, roomCount } = req.body;
+        const {
+            name,
+            address,
+            cost,
+            roomCount,
+            city_code,
+            district_code,
+            ward_code,
+        } = req.body;
         if (!name || !address || !cost || !roomCount) {
             res.json({
                 error: "Missing required fields",
@@ -63,6 +82,9 @@ const updateApartment = async (req, res) => {
                 address,
                 cost,
                 roomCount,
+                city_code,
+                district_code,
+                ward_code,
             },
             {
                 where: {

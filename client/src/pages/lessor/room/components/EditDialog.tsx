@@ -5,6 +5,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
+import { useSearchParams } from "react-router-dom";
 import { useAppSelector } from "../../../../redux/hooks";
 import { IRoom, RoomStatus } from "../../models";
 
@@ -17,6 +18,8 @@ export interface IAddDialogProps {
 
 export default function EditDialog(props: IAddDialogProps) {
     const { isOpen, onClose, onSubmit } = props;
+    let [searchParams, setSearchParams] = useSearchParams();
+
     const { room } = useAppSelector((state) => state.lessor.editRoomDialog);
 
     const handleClose = () => {
@@ -33,6 +36,7 @@ export default function EditDialog(props: IAddDialogProps) {
             name: formData.get("name") as string,
             cost: Number(formData.get("cost")) || 0,
             status: RoomStatus.Available,
+            apartmentId: Number(searchParams.get("apartmentId")),
         });
     };
 

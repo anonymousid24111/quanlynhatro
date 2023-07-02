@@ -6,9 +6,9 @@ const ApartmentModel = require("../models/apartment.model");
 
 const createRoom = async (req, res) => {
     try {
-        const { name, address, status, cost, maxAllow } = req.body;
+        const { name, address, status, cost, maxAllow, apartmentId } = req.body;
         // validate data
-        if (!name || !address || !cost || !maxAllow) {
+        if (!name || !address || !cost || !maxAllow || !apartmentId) {
             res.json({
                 error: "Missing required fields",
             });
@@ -21,7 +21,7 @@ const createRoom = async (req, res) => {
             cost,
             maxAllow,
             status: 0,
-            apartmentId: 2,
+            apartmentId,
         });
         res.json({
             data: newRoom,
@@ -78,7 +78,12 @@ const updateRoom = async (req, res) => {
 };
 const getListRoom = async (req, res) => {
     try {
+        console.log("req.query", req.query);
+        const { id } = req.query;
         const roomList = await RoomModel.findAll({
+            where: {
+                apartmentId: Number(id),
+            },
             include: ApartmentModel,
         });
         res.json({

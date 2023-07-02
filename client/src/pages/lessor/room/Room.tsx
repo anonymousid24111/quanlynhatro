@@ -1,9 +1,21 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/Edit";
-import { Breadcrumbs, Button, Link, Stack, Typography } from "@mui/material";
+import {
+    Box,
+    Breadcrumbs,
+    Button,
+    FormControl,
+    InputLabel,
+    Link,
+    MenuItem,
+    Select,
+    Stack,
+    Typography,
+} from "@mui/material";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { PromiseStatus } from "../../../utils";
@@ -11,6 +23,7 @@ import WarningDialog from "../../admin/usermangement/components/WarningDialog";
 import {
     addRoomAsync,
     deleteRoomAsync,
+    getApartmentsAsync,
     getRoomsAsync,
     updateRoomAsync,
 } from "../lessorAction";
@@ -26,8 +39,12 @@ import { IRoom, RoomStatus } from "../models";
 import { defaultRoom } from "../utils";
 import AddDialog from "./components/AddDialog";
 import EditDialog from "./components/EditDialog";
+import { UserRole } from "../../auth/models";
 
 function Room() {
+    let [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const { apartmentListPage } = useAppSelector((state) => state.lessor);
     const {
         addRoomDialog,
         editRoomDialog,
@@ -38,8 +55,13 @@ function Room() {
     const { items } = roomListPage;
     const dispatch = useAppDispatch();
     useEffect(() => {
-        dispatch(getRoomsAsync());
-    }, []);
+        dispatch(
+            getRoomsAsync({
+                id: Number(searchParams.get("apartmentId")),
+            })
+        );
+        dispatch(getApartmentsAsync());
+    }, [searchParams.get("apartmentId")]);
     const handleEditClick = (id: number) => () => {
         const currentRoom = items.find((row: IRoom) => row.id === id);
         if (currentRoom) {
@@ -88,15 +110,15 @@ function Room() {
             field: "status",
             headerName: "Trạng thái",
             width: 160,
-            valueGetter: (params) => {
+            valueGetter: (params: any) => {
                 if (params.value === RoomStatus.Available) {
-                    return "Trống"
+                    return "Trống";
                 }
                 if (params.value === RoomStatus.OutSoon) {
-                    return "Sắp trống"
+                    return "Sắp trống";
                 }
                 if (params.value === RoomStatus.Rented) {
-                    return "Đang ở"
+                    return "Đang ở";
                 }
             },
         },
@@ -104,7 +126,7 @@ function Room() {
             field: "apartment",
             headerName: "Nhà",
             width: 260,
-            valueGetter: (params) => {
+            valueGetter: (params: any) => {
                 if (!params.value) {
                     return params.value;
                 }
@@ -141,7 +163,11 @@ function Room() {
         if (id) {
             const res = await dispatch(deleteRoomAsync(id));
             if (res.payload.data?.room) {
-                dispatch(getRoomsAsync());
+                dispatch(
+                    getRoomsAsync({
+                        id: Number(searchParams.get("apartmentId")),
+                    })
+                );
                 dispatch(setIsOpenDialogConfirmDelete(false));
                 dispatch(setSelectedRoom(defaultRoom));
             } else {
@@ -154,7 +180,11 @@ function Room() {
         console.log("user", room);
         const res = await dispatch(addRoomAsync(room));
         if (res.payload.data?.id) {
-            dispatch(getRoomsAsync());
+            dispatch(
+                getRoomsAsync({
+                    id: Number(searchParams.get("apartmentId")),
+                })
+            );
             dispatch(
                 setAddRoomDialog({
                     isOpen: false,
@@ -169,7 +199,11 @@ function Room() {
         const res = await dispatch(updateRoomAsync(room));
         console.log("res", res);
         if (res.payload.data?.[0]) {
-            dispatch(getRoomsAsync());
+            dispatch(
+                getRoomsAsync({
+                    id: Number(searchParams.get("apartmentId")),
+                })
+            );
             setEditRoomDialog({
                 isOpen: false,
                 status: PromiseStatus.Fulfilled,
@@ -203,7 +237,12 @@ function Room() {
                     <Typography color="text.primary">Quản lý phòng</Typography>
                 </Breadcrumbs>
             </Stack>
-            <Stack direction="row" spacing={2} margin={"8px 12px"}>
+            <Stack
+                direction="row"
+                alignItems={"center"}
+                spacing={2}
+                margin={"8px 12px"}
+            >
                 <Button
                     variant="contained"
                     endIcon={<AddIcon />}
@@ -213,6 +252,35 @@ function Room() {
                 >
                     Thêm phòng
                 </Button>
+                <Box sx={{ width: 120 }}>
+                    <FormControl margin="normal" fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                            Nhà
+                        </InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={Number(searchParams.get("apartmentId"))}
+                            label="Role"
+                            onChange={(event) => {
+                                // navigate("/lessor/room?aparmentId")
+                                setSearchParams({
+                                    apartmentId: event.target.value.toString(),
+                                });
+                            }}
+                        >
+                            {Array.isArray(apartmentListPage.items)
+                                ? apartmentListPage.items.map((item) => {
+                                      return (
+                                          <MenuItem value={item.id}>
+                                              {item.name}
+                                          </MenuItem>
+                                      );
+                                  })
+                                : []}
+                        </Select>
+                    </FormControl>
+                </Box>
             </Stack>
             <br />
             <DataGrid

@@ -2,6 +2,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import { Breadcrumbs, Button, Link, Stack, Typography } from "@mui/material";
+import { Link as RLink } from "react-router-dom";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
@@ -67,6 +68,13 @@ const Apartment = () => {
             field: "name",
             headerName: "Tên",
             width: 200,
+            renderCell: (params: any) => {
+                return (
+                    <RLink to={`/lessor/room?apartmentId=${params.row.id}`}>
+                        {params.value}
+                    </RLink>
+                );
+            },
         },
         {
             field: "address",
@@ -178,7 +186,7 @@ const Apartment = () => {
                     },
                 }}
                 pageSizeOptions={[5, 10]}
-                checkboxSelection
+                // checkboxSelection
             />
         </div>
     );

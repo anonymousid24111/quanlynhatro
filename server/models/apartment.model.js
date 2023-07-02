@@ -13,6 +13,9 @@ var ApartmentModel = sequelize.define("apartment", {
     roomCount: Sequelize.INTEGER,
     status: Sequelize.INTEGER,
     cost: Sequelize.INTEGER,
+    city_code: Sequelize.INTEGER,
+    district_code: Sequelize.INTEGER,
+    ward_code: Sequelize.INTEGER,
 });
 
 // define the Apartment-Room association

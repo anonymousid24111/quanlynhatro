@@ -19,6 +19,9 @@ export interface IApartment {
     roomCount: number;
     status: ApartmentStatus;
     cost: number;
+    city_code: number;
+    district_code: number;
+    ward_code: number;
 }
 export interface IRoom {
     id: number;
@@ -27,6 +30,7 @@ export interface IRoom {
     maxAllow: number;
     status: RoomStatus;
     cost: number;
+    apartmentId: number;
 }
 
 export interface IAddApartmentDialog {

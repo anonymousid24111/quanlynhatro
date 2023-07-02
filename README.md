@@ -25,3 +25,8 @@
 1. vào command line nhập: cd server
 2. cài đặt các package cần thiết: npm i hoặc pnpm i
 3. khởi chạy dự án: npm start
+
+### Lệnh
+1. Up migrate: npx sequelize-cli db:migrate
+2. Seed: npx sequelize-cli db:seed:all
+3. Undo seed: npx sequelize-cli db:seed:undo

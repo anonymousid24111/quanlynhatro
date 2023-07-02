@@ -1,0 +1,29 @@
+1. Dịch vụ bao gốm:
+    Tên
+    Giá
+    Đơn vị tính
+2. 
+    địa chị chọn tỉnh, huyện, xã
+    click tên nhà chuyển sang trang quản lý phòng + (id) done
+    hiện thị thông tin nhà của chủ trọ done
+
+3. Thông tin phòng
+    Diện tích, Tầng, Tiền cọc(nullable)
+    Tiện ích(Thiết bị trong phong), thêm thiết bị khác
+
+4. Hợp đồng
+    Ngày vào, Thời hạn, Tiền PHòng, Tiền cọc(điến trước từ thôgn tin phòng).
+    Số người
+    Chu kì thanh toán
+    Ngày chốt tiền(null)
+    Thông tin khách hàng
+        SĐT
+5. Hoá Đơn
+    Tháng
+    Dịch vụ
+    Tiền phòng
+6. Trang hoá đonw
+    Lọc theo nhà, phòng, tháng, 
+    Cột Nhà phòng khách tổng tiền, trạng thái thanh toán, Thao tác 
+7. Bảng tin
+    Tiêu đề, hình ảnh, mô tả, giá phòng, trạng thái (duyệt/chưa) ....

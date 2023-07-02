@@ -56,11 +56,16 @@ export const updateRoomAsync = createAsyncThunk(
     }
 );
 
-export const getRoomsAsync = createAsyncThunk("lessor/getRooms", async () => {
-    const response = await getRooms();
-    console.log("response", response);
-    return response.data;
-});
+export const getRoomsAsync = createAsyncThunk(
+    "lessor/getRooms",
+    async ({ id }: { id: number }) => {
+        const response = await getRooms({
+            id,
+        });
+        console.log("response", response);
+        return response.data;
+    }
+);
 export const deleteRoomAsync = createAsyncThunk(
     "lessor/deleteRoom",
     async (id: number) => {

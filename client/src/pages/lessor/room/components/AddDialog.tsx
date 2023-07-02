@@ -6,6 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { UserRole } from "../../../auth/models";
 import { IRoom, RoomStatus } from "../../models";
 
@@ -17,6 +18,7 @@ export interface IAddDialogProps {
 
 export default function AddDialog(props: IAddDialogProps) {
     const { isOpen, onClose, onSubmit } = props;
+    let [searchParams, setSearchParams] = useSearchParams();
 
     const handleClose = () => {
         onClose();
@@ -36,6 +38,7 @@ export default function AddDialog(props: IAddDialogProps) {
             name: formData.get("name") as string,
             cost: Number(formData.get("cost")) || 0,
             status: RoomStatus.Available,
+            apartmentId: Number(searchParams.get("apartmentId")),
         });
     };
 

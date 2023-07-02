@@ -33,6 +33,9 @@ module.exports = {
             roomCount: Sequelize.INTEGER,
             status: Sequelize.INTEGER,
             cost: Sequelize.INTEGER,
+            city_code: Sequelize.INTEGER,
+            district_code: Sequelize.INTEGER,
+            ward_code: Sequelize.INTEGER,
             userprofileId: {
                 type: Sequelize.INTEGER,
                 allowNull: true,

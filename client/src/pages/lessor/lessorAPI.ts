@@ -17,8 +17,12 @@ export const updateApartment = (apartment: IApartment) => {
 export const deleteRoom = (id: number) => {
     return fetchHandler.delete("/room/" + id);
 };
-export const getRooms = () => {
-    return fetchHandler.get("/room/list");
+export const getRooms = ({ id }: { id: number }) => {
+    return fetchHandler.get("/room/list", {
+        params: {
+            id,
+        },
+    });
 };
 export const addRoom = (apartment: IRoom) => {
     return fetchHandler.post("/room/create", apartment);
