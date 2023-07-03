@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { PromiseStatus } from "../../../utils";
@@ -39,11 +39,9 @@ import { IRoom, RoomStatus } from "../models";
 import { defaultRoom } from "../utils";
 import AddDialog from "./components/AddDialog";
 import EditDialog from "./components/EditDialog";
-import { UserRole } from "../../auth/models";
 
 function Room() {
     let [searchParams, setSearchParams] = useSearchParams();
-    const navigate = useNavigate();
     const { apartmentListPage } = useAppSelector((state) => state.lessor);
     const {
         addRoomDialog,

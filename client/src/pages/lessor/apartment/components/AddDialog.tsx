@@ -1,12 +1,15 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
     Box,
     FormControl,
     FormLabel,
     Grid,
+    IconButton,
     InputLabel,
     MenuItem,
     Select,
     SelectChangeEvent,
+    Stack,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -14,9 +17,16 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
+import { nanoid } from "@reduxjs/toolkit";
 import { useState } from "react";
 import { cities, districts, wards } from "../../../../utils/data";
-import { ApartmentStatus, IApartment } from "../../models";
+import {
+    ApartmentStatus,
+    IApartment,
+    IServiceModel,
+    ServiceAction,
+} from "../../models";
+import { defaultServiceList, serviceTypeOptions } from "../../utils";
 
 export interface IAddDialogProps {
     isOpen: boolean;
@@ -38,6 +48,23 @@ export default function AddDialog(props: IAddDialogProps) {
     };
     const [districtList, setDistrictList] = useState<any[]>([]);
     const [wardList, setWardList] = useState<any[]>([]);
+
+    const [serviceList, setServiceList] =
+        useState<IServiceModel[]>(defaultServiceList);
+
+    const handleChangeServiceById = (id: string, payload: any) => {
+        const indexOfService = serviceList.findIndex(
+            (item) => item.localId === id
+        );
+        setServiceList([
+            ...serviceList.slice(0, indexOfService),
+            {
+                ...serviceList[indexOfService],
+                [payload.key]: payload.value,
+            },
+            ...serviceList.slice(indexOfService + 1),
+        ]);
+    };
 
     const [address, setAddress] = useState<IAddress>({
         city: 0,
@@ -89,17 +116,12 @@ export default function AddDialog(props: IAddDialogProps) {
             city_code: address.city,
             district_code: address.district,
             ward_code: address.ward,
-            service: {
-                name: formData.get("service_name") as string,
-                cost: Number(formData.get("service_cost")),
-                type: Number(formData.get("service_type")),
-                unit: formData.get("service_unit") as string,
-            },
+            services: serviceList,
         });
     };
 
     return (
-        <Dialog open={isOpen} onClose={handleClose}>
+        <Dialog fullWidth maxWidth={"md"} open={isOpen} onClose={handleClose}>
             <Box
                 component="form"
                 onSubmit={handleSubmit}
@@ -207,60 +229,199 @@ export default function AddDialog(props: IAddDialogProps) {
                         id="cost"
                         autoComplete="off"
                     />
-                    {/* <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        type="text"
-                        name="service"
-                        label="Dịch vụ"
-                        id="service"
-                        autoComplete="off"
-                    /> */}
-                    <FormLabel>Dịch vụ</FormLabel>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={3}>
-                            <TextField
-                                autoComplete="given-name"
-                                name="service_name"
-                                required
-                                fullWidth
-                                id="service_name"
-                                label="Tên dịch vụ"
-                                autoFocus
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <TextField
-                                required
-                                fullWidth
-                                id="service_type"
-                                label="Loại dịch vụ"
-                                name="service_type"
-                                autoComplete="family-name"
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <TextField
-                                required
-                                fullWidth
-                                id="service_cost"
-                                label="Giá"
-                                name="service_cost"
-                                autoComplete="family-name"
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <TextField
-                                required
-                                fullWidth
-                                id="service_unit"
-                                label="Đơn vị"
-                                name="service_unit"
-                                autoComplete="family-name"
-                            />
-                        </Grid>
-                    </Grid>
+                    <Stack
+                        margin={"8px 0px"}
+                        direction="row"
+                        spacing={2}
+                        alignItems={"center"}
+                    >
+                        <FormLabel>Dịch vụ</FormLabel>
+                        <Button
+                            variant="contained"
+                            onClick={() => {
+                                setServiceList([
+                                    ...serviceList,
+                                    {
+                                        localId: nanoid(),
+                                        cost: 0,
+                                        name: "",
+                                        type: 0,
+                                        unit: "",
+                                        action: ServiceAction.Add,
+                                    },
+                                ]);
+                            }}
+                        >
+                            Thêm
+                        </Button>
+                    </Stack>
+                    <Stack gap={2}>
+                        {Array.isArray(serviceList) &&
+                            serviceList
+                                .filter(
+                                    (item) =>
+                                        item.action !== ServiceAction.Delete
+                                )
+                                .map((service) => {
+                                    const { cost, name, type, unit, localId } =
+                                        service || {};
+                                    return (
+                                        <Grid
+                                            key={localId}
+                                            container
+                                            alignItems={"center"}
+                                            spacing={1}
+                                        >
+                                            <Grid item xs={12} sm={3}>
+                                                <TextField
+                                                    autoComplete="given-name"
+                                                    name="service_name"
+                                                    required
+                                                    fullWidth
+                                                    id="service_name"
+                                                    size="small"
+                                                    label="Tên dịch vụ"
+                                                    autoFocus
+                                                    value={name}
+                                                    onChange={(e) =>
+                                                        handleChangeServiceById(
+                                                            localId,
+                                                            {
+                                                                key: "name",
+                                                                value: e.target
+                                                                    .value,
+                                                            }
+                                                        )
+                                                    }
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} sm={3}>
+                                                <FormControl
+                                                    sx={{ width: "100%" }}
+                                                    size="small"
+                                                >
+                                                    <InputLabel id="demo-select-small-label">
+                                                        Loại
+                                                    </InputLabel>
+                                                    <Select
+                                                        labelId="demo-select-small-label"
+                                                        id="demo-select-small"
+                                                        label="Loại"
+                                                        value={type.toString()}
+                                                    >
+                                                        {serviceTypeOptions.map(
+                                                            (item) => {
+                                                                const {
+                                                                    value,
+                                                                    label,
+                                                                } = item;
+                                                                return (
+                                                                    <MenuItem
+                                                                        key={
+                                                                            value
+                                                                        }
+                                                                        value={
+                                                                            value
+                                                                        }
+                                                                    >
+                                                                        {label}
+                                                                    </MenuItem>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </Select>
+                                                </FormControl>
+                                                {/* <TextField
+                                                required
+                                                fullWidth
+                                                id="service_type"
+                                                label="Loại dịch vụ"
+                                                name="service_type"
+                                                autoComplete="family-name"
+                                                value={type}
+                                                onChange={(e) =>
+                                                    handleChangeServiceById(
+                                                        localId,
+                                                        {
+                                                            key: "type",
+                                                            value: e.target
+                                                                .value,
+                                                        }
+                                                    )
+                                                }
+                                            /> */}
+                                            </Grid>
+                                            <Grid item xs={12} sm={2}>
+                                                <TextField
+                                                    size="small"
+                                                    required
+                                                    fullWidth
+                                                    id="service_cost"
+                                                    label="Giá"
+                                                    name="service_cost"
+                                                    autoComplete="family-name"
+                                                    value={cost}
+                                                    onChange={(e) =>
+                                                        handleChangeServiceById(
+                                                            localId,
+                                                            {
+                                                                key: "cost",
+                                                                value: e.target
+                                                                    .value,
+                                                            }
+                                                        )
+                                                    }
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} sm={3}>
+                                                <TextField
+                                                    size="small"
+                                                    required
+                                                    fullWidth
+                                                    id="service_unit"
+                                                    label="Đơn vị"
+                                                    name="service_unit"
+                                                    autoComplete="family-name"
+                                                    value={unit}
+                                                    onChange={(e) =>
+                                                        handleChangeServiceById(
+                                                            localId,
+                                                            {
+                                                                key: "unit",
+                                                                value: e.target
+                                                                    .value,
+                                                            }
+                                                        )
+                                                    }
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} sm={1}>
+                                                <IconButton
+                                                    onClick={() => {
+                                                        handleChangeServiceById(
+                                                            localId,
+                                                            {
+                                                                key: "action",
+                                                                value: ServiceAction.Delete,
+                                                            }
+                                                        );
+                                                        // setServiceList(
+                                                        //     serviceList.filter(
+                                                        //         (item) =>
+                                                        //             item.localId !==
+                                                        //             localId
+                                                        //     )
+                                                        // );
+                                                    }}
+                                                    aria-label="delete"
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </Grid>
+                                        </Grid>
+                                    );
+                                })}
+                    </Stack>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>

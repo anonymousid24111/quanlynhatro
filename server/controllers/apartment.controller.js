@@ -22,7 +22,7 @@ const createApartment = async (req, res) => {
             city_code,
             district_code,
             ward_code,
-            service,
+            services,
         } = req.body;
         // validate data
         if (!name || !address || !cost || !roomCount) {
@@ -43,14 +43,18 @@ const createApartment = async (req, res) => {
             district_code,
             ward_code,
         });
-        if (service) {
-            const newService = await ServiceModel.create({
-                name: service.name,
-                cost: service.cost,
-                type: service.type,
-                unit: service.unit,
-                apartmentId: newApartment.id,
-            });
+        if (services) {
+            await Promise.all(
+                services.map((item) => {
+                    return ServiceModel.create({
+                        name: item.name,
+                        cost: item.cost,
+                        type: item.type,
+                        unit: item.unit,
+                        apartmentId: newApartment.id,
+                    });
+                })
+            );
         }
         res.json({
             data: newApartment,
@@ -79,12 +83,46 @@ const updateApartment = async (req, res) => {
             city_code,
             district_code,
             ward_code,
+            services,
         } = req.body;
         if (!name || !address || !cost || !roomCount) {
             res.json({
                 error: "Missing required fields",
             });
             return;
+        }
+
+        if (Array.isArray(services)) {
+            await Promise.all(
+                services.map((item) => {
+                    if (!item.id) {
+                        return ServiceModel.create({
+                            name: item.name,
+                            cost: Number(item.cost),
+                            type: Number(item.type),
+                            unit: item.unit,
+                            apartmentId: id,
+                        });
+                    }
+                    if (Number(item.action) === 2) {
+                        return ServiceModel.destroy({
+                            where: {
+                                id: item.id,
+                            },
+                        });
+                    }
+                    return ServiceModel.update(
+                        {
+                            ...item,
+                        },
+                        {
+                            where: {
+                                id: item.id,
+                            },
+                        }
+                    );
+                })
+            );
         }
 
         const currentApartment = await ApartmentModel.update(
