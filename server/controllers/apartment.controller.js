@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 const { pool } = require("../db");
 const jwt = require("jsonwebtoken");
-const UserProfile = require("../models/userprofile.model");
 const { USER_ROLE } = require("../consts/user.const");
 const { Op } = require("sequelize");
 const ApartmentModel = require("../models/apartment.model");

@@ -21,6 +21,15 @@ module.exports = {
             password: Sequelize.STRING,
             phone: Sequelize.STRING,
             role: Sequelize.INTEGER,
+            email: Sequelize.STRING,
+            birthDay: Sequelize.DATE,
+            city_code: Sequelize.INTEGER,
+            district_code: Sequelize.INTEGER,
+            ward_code: Sequelize.INTEGER,
+            address: Sequelize.STRING,
+            idnumber: Sequelize.INTEGER,
+            dateOfIssue: Sequelize.DATE,
+            placeOfIssue: Sequelize.STRING,
         });
         await queryInterface.createTable("apartments", {
             id: {
@@ -58,6 +67,8 @@ module.exports = {
             status: Sequelize.INTEGER,
             cost: Sequelize.INTEGER,
             maxAllow: Sequelize.INTEGER,
+            acreage: Sequelize.INTEGER,
+            deposit: Sequelize.INTEGER,
             apartmentId: {
                 type: Sequelize.INTEGER,
                 allowNull: true,
@@ -68,6 +79,79 @@ module.exports = {
                 onUpdate: "CASCADE",
                 onDelete: "CASCADE",
             },
+        });
+        await queryInterface.createTable("bills", {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            status: Sequelize.INTEGER,
+            applyMonth: Sequelize.DATE,
+            totalCost: Sequelize.INTEGER,
+        });
+        await queryInterface.createTable("billservices", {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            startNumber: Sequelize.INTEGER,
+            endNumber: Sequelize.INTEGER,
+            count: Sequelize.INTEGER,
+            totalCost: Sequelize.INTEGER,
+            billId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "bills",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
+        });
+        await queryInterface.createTable("contracts", {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            startDate: Sequelize.DATE,
+            endDate: Sequelize.DATE,
+            cost: Sequelize.INTEGER,
+            deposit: Sequelize.INTEGER,
+            paymentCycle: Sequelize.INTEGER,
+            collectionDate: Sequelize.INTEGER,
+        });
+        await queryInterface.createTable("equipments", {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            name: Sequelize.STRING,
+            count: Sequelize.INTEGER,
+        });
+        await queryInterface.createTable("images", {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            url: Sequelize.STRING,
+            alt: Sequelize.STRING,
+            type: Sequelize.INTEGER,
+        });
+        await queryInterface.createTable("posts", {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            title: Sequelize.STRING,
+            description: Sequelize.STRING,
+            status: Sequelize.INTEGER,
         });
         await queryInterface.createTable("services", {
             id: {
@@ -93,15 +177,15 @@ module.exports = {
     },
 
     async down(queryInterface, Sequelize) {
-        /**
-         * Add reverting commands here.
-         *
-         * Example:
-         * await queryInterface.dropTable('userprofiles');
-         */
         await queryInterface.dropTable("services");
         await queryInterface.dropTable("rooms");
         await queryInterface.dropTable("apartments");
         await queryInterface.dropTable("userprofiles");
+        await queryInterface.dropTable("bills");
+        await queryInterface.dropTable("billservices");
+        await queryInterface.dropTable("contracts");
+        await queryInterface.dropTable("equipments");
+        await queryInterface.dropTable("images");
+        await queryInterface.dropTable("posts");
     },
 };

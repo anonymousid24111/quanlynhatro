@@ -33,7 +33,7 @@ export interface IService {
     name: string;
     cost: number;
     type: ServiceType;
-    unit: string;
+    unit: string | number;
 }
 
 export enum ServiceAction {

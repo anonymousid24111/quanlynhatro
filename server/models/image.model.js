@@ -1,16 +1,15 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const { sequelize } = require("../db");
 
-var ServiceModel = sequelize.define("service", {
+var ImageModel = sequelize.define("image", {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
-    name: Sequelize.STRING,
-    cost: Sequelize.INTEGER,
+    url: Sequelize.STRING,
+    alt: Sequelize.STRING,
     type: Sequelize.INTEGER,
-    unit: Sequelize.STRING,
 });
 
-module.exports = ServiceModel;
+module.exports = ImageModel;

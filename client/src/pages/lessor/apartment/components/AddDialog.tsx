@@ -26,7 +26,11 @@ import {
     IServiceModel,
     ServiceAction,
 } from "../../models";
-import { defaultServiceList, serviceTypeOptions } from "../../utils";
+import {
+    defaultServiceList,
+    serviceTypeOptions,
+    serviceUnitOptions,
+} from "../../utils";
 
 export interface IAddDialogProps {
     isOpen: boolean;
@@ -56,11 +60,18 @@ export default function AddDialog(props: IAddDialogProps) {
         const indexOfService = serviceList.findIndex(
             (item) => item.localId === id
         );
+        const currentUnit = serviceTypeOptions.find(
+            (x) => x.value === payload.value
+        )?.unit;
         setServiceList([
             ...serviceList.slice(0, indexOfService),
             {
                 ...serviceList[indexOfService],
                 [payload.key]: payload.value,
+                unit:
+                    payload.key === "type"
+                        ? currentUnit
+                        : serviceList[indexOfService].unit,
             },
             ...serviceList.slice(indexOfService + 1),
         ]);
@@ -308,6 +319,17 @@ export default function AddDialog(props: IAddDialogProps) {
                                                         id="demo-select-small"
                                                         label="Loại"
                                                         value={type.toString()}
+                                                        onChange={(e) => {
+                                                            handleChangeServiceById(
+                                                                localId,
+                                                                {
+                                                                    key: "type",
+                                                                    value: e
+                                                                        .target
+                                                                        .value,
+                                                                }
+                                                            );
+                                                        }}
                                                     >
                                                         {serviceTypeOptions.map(
                                                             (item) => {
@@ -351,6 +373,7 @@ export default function AddDialog(props: IAddDialogProps) {
                                                 }
                                             /> */}
                                             </Grid>
+
                                             <Grid item xs={12} sm={2}>
                                                 <TextField
                                                     size="small"
@@ -373,7 +396,7 @@ export default function AddDialog(props: IAddDialogProps) {
                                                     }
                                                 />
                                             </Grid>
-                                            <Grid item xs={12} sm={3}>
+                                            {/* <Grid item xs={12} sm={3}>
                                                 <TextField
                                                     size="small"
                                                     required
@@ -394,6 +417,74 @@ export default function AddDialog(props: IAddDialogProps) {
                                                         )
                                                     }
                                                 />
+                                            </Grid> */}
+                                            <Grid item xs={12} sm={3}>
+                                                <FormControl
+                                                    sx={{ width: "100%" }}
+                                                    size="small"
+                                                >
+                                                    <InputLabel id="type-select-small-label">
+                                                        Đơn vị
+                                                    </InputLabel>
+                                                    <Select
+                                                        labelId="type-select-small-label"
+                                                        id="type-select-small"
+                                                        label="Loại"
+                                                        disabled
+                                                        value={Number(unit)}
+                                                        // onChange={(e) => {
+                                                        //     handleChangeServiceById(
+                                                        //         localId,
+                                                        //         {
+                                                        //             key: "type",
+                                                        //             value: e
+                                                        //                 .target
+                                                        //                 .value,
+                                                        //         }
+                                                        //     );
+                                                        // }}
+                                                    >
+                                                        {serviceUnitOptions.map(
+                                                            (item) => {
+                                                                const {
+                                                                    value,
+                                                                    label,
+                                                                } = item;
+                                                                return (
+                                                                    <MenuItem
+                                                                        key={
+                                                                            value
+                                                                        }
+                                                                        value={
+                                                                            value
+                                                                        }
+                                                                    >
+                                                                        {label}
+                                                                    </MenuItem>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </Select>
+                                                </FormControl>
+                                                {/* <TextField
+                                                required
+                                                fullWidth
+                                                id="service_type"
+                                                label="Loại dịch vụ"
+                                                name="service_type"
+                                                autoComplete="family-name"
+                                                value={type}
+                                                onChange={(e) =>
+                                                    handleChangeServiceById(
+                                                        localId,
+                                                        {
+                                                            key: "type",
+                                                            value: e.target
+                                                                .value,
+                                                        }
+                                                    )
+                                                }
+                                            /> */}
                                             </Grid>
                                             <Grid item xs={12} sm={1}>
                                                 <IconButton

@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const { sequelize } = require("../db");
-const ApartmentModel = require("./apartment.model");
+const EquipmentModel = require("./equipment.model");
+const ImageModel = require("./image.model");
 
 var RoomModel = sequelize.define("room", {
     id: {
@@ -13,10 +14,12 @@ var RoomModel = sequelize.define("room", {
     status: Sequelize.INTEGER,
     cost: Sequelize.INTEGER,
     maxAllow: Sequelize.INTEGER,
-    // apartment: Sequelize.INTEGER,
+    acreage: Sequelize.INTEGER,
+    deposit: Sequelize.INTEGER,
 });
-
-// ApartmentModel.hasMany(RoomModel, { foreignKey: { allowNull: false } });
-// RoomModel.belongsTo(ApartmentModel);
+RoomModel.hasMany(EquipmentModel, { foreignKey: { allowNull: false } });
+EquipmentModel.belongsTo(RoomModel);
+RoomModel.hasMany(ImageModel, { foreignKey: { allowNull: false } });
+ImageModel.belongsTo(RoomModel);
 
 module.exports = RoomModel;

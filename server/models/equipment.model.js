@@ -1,16 +1,14 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const { sequelize } = require("../db");
 
-var ServiceModel = sequelize.define("service", {
+var EquipmentModel = sequelize.define("equipment", {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
     name: Sequelize.STRING,
-    cost: Sequelize.INTEGER,
-    type: Sequelize.INTEGER,
-    unit: Sequelize.STRING,
+    count: Sequelize.INTEGER,
 });
 
-module.exports = ServiceModel;
+module.exports = EquipmentModel;
