@@ -1,13 +1,5 @@
 import { nanoid } from "@reduxjs/toolkit";
-import {
-    ApartmentStatus,
-    IApartment,
-    IRoom,
-    IServiceModel,
-    RoomStatus,
-    ServiceAction,
-    ServiceType,
-} from "./models";
+import { ApartmentStatus, IApartment, IRoom, IServiceModel, RoomStatus, ServiceAction, ServiceType } from "./models";
 
 export const defaultApartment: IApartment = {
     id: 0,
@@ -137,7 +129,7 @@ export const serviceTypeOptions = [
 
 export const serviceUnitOptions = [
     {
-        label: "đ/Kwh",
+        label: "đ/Kwhs",
         value: ServiceUnit.KWH,
     },
     {
@@ -155,5 +147,95 @@ export const serviceUnitOptions = [
     {
         label: "Đồng/Chiếc/Tháng",
         value: ServiceUnit.EachOne,
+    },
+];
+export enum EquipmentType {
+    BanCong = "Ban công",
+    BaoVe = "Bảo vệ",
+    Camera = "Camera",
+    DieuHoa = "Điều hoà",
+    GacXep = "Gác xép",
+    Giuong = "Giường",
+    NhaBep = "Nhà bếp",
+    BaiDeXe = "Bãi để xe",
+    ThangMay = "Thang máy",
+    Tivi = "Tivi",
+    TuLanh = "Tủ lạnh",
+    Internet = "Internet",
+    BinhNongLanh = "Bình nóng lạng",
+    Wifi = "Wifi",
+    WC = "WC",
+    TuQuanAo = "Tủ quần áo",
+    MayGiat = "Máy giặt",
+}
+
+export const equipmentOptions = [
+    {
+        label: "Ban công",
+        value: EquipmentType.BanCong,
+    },
+    {
+        label: "Bảo vệ",
+        value: EquipmentType.BaoVe,
+    },
+    {
+        label: "Camera",
+        value: EquipmentType.Camera,
+    },
+    {
+        label: "Điều hoà",
+        value: EquipmentType.DieuHoa,
+    },
+    {
+        label: "Gác xép",
+        value: EquipmentType.GacXep,
+    },
+    {
+        label: "Giường",
+        value: EquipmentType.Giuong,
+    },
+    {
+        label: "Nhà bếp",
+        value: EquipmentType.NhaBep,
+    },
+    {
+        label: "Bãi để xe",
+        value: EquipmentType.BaiDeXe,
+    },
+    {
+        label: "Thang máy",
+        value: EquipmentType.ThangMay,
+    },
+    {
+        label: "Tivi",
+        value: EquipmentType.Tivi,
+    },
+    {
+        label: "Tủ lạnh",
+        value: EquipmentType.TuLanh,
+    },
+    {
+        label: "Internet",
+        value: EquipmentType.Internet,
+    },
+    {
+        label: "Bình nóng lạnh",
+        value: EquipmentType.BinhNongLanh,
+    },
+    {
+        label: "Wifi",
+        value: EquipmentType.Wifi,
+    },
+    {
+        label: "WC",
+        value: EquipmentType.WC,
+    },
+    {
+        label: "Tủ quần áo",
+        value: EquipmentType.TuQuanAo,
+    },
+    {
+        label: "Máy giặt",
+        value: EquipmentType.MayGiat,
     },
 ];

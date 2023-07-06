@@ -1,12 +1,3 @@
-1. Dịch vụ bao gốm: done
-    Tên
-    Giá
-    Đơn vị tính
-2. 
-    địa chị chọn tỉnh, huyện, xã done
-    click tên nhà chuyển sang trang quản lý phòng + (id) done
-    hiện thị thông tin nhà của chủ trọ done
-
 3. Thông tin phòng
     Diện tích, Tầng, Tiền cọc(nullable)
     Tiện ích(Thiết bị trong phong), thêm thiết bị khác

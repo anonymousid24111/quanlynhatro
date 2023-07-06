@@ -27,6 +27,8 @@
 3. khởi chạy dự án: npm start
 
 ### Lệnh
-1. Up migrate: npx sequelize-cli db:migrate
-2. Seed: npx sequelize-cli db:seed:all
-3. Undo seed: npx sequelize-cli db:seed:undo
+1. npx sequelize-cli db:migrate
+2. npx sequelize-cli db:migrate:undo
+3. Up migrate: npx sequelize-cli db:migrate
+4. Seed: npx sequelize-cli db:seed:all
+5. Undo seed: npx sequelize-cli db:seed:undo

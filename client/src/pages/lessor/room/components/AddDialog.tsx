@@ -1,4 +1,4 @@
-import { Box, SelectChangeEvent } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, FormLabel, Grid, SelectChangeEvent, Stack } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { UserRole } from "../../../auth/models";
 import { IRoom, RoomStatus } from "../../models";
+import { equipmentOptions } from "../../utils";
 
 export interface IAddDialogProps {
     isOpen: boolean;
@@ -18,7 +19,7 @@ export interface IAddDialogProps {
 
 export default function AddDialog(props: IAddDialogProps) {
     const { isOpen, onClose, onSubmit } = props;
-    let [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
 
     const handleClose = () => {
         onClose();
@@ -39,31 +40,29 @@ export default function AddDialog(props: IAddDialogProps) {
             cost: Number(formData.get("cost")) || 0,
             status: RoomStatus.Available,
             apartmentId: Number(searchParams.get("apartmentId")),
+            // equipments: [],
         });
     };
 
     return (
         <Dialog open={isOpen} onClose={handleClose}>
-            <Box
-                component="form"
-                onSubmit={handleSubmit}
-                noValidate
-                sx={{ mt: 1 }}
-            >
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <DialogTitle>Thêm phòng</DialogTitle>
                 <DialogContent>
                     <TextField
+                        size="small"
                         margin="normal"
                         required
                         fullWidth
                         id="name"
-                        label="Tên"
+                        label="Tên phòng"
                         name="name"
                         autoFocus
                         autoComplete="off"
                         type="text"
                     />
                     <TextField
+                        size="small"
                         margin="normal"
                         required
                         fullWidth
@@ -75,6 +74,7 @@ export default function AddDialog(props: IAddDialogProps) {
                         type="text"
                     />
                     <TextField
+                        size="small"
                         margin="normal"
                         required
                         fullWidth
@@ -84,36 +84,18 @@ export default function AddDialog(props: IAddDialogProps) {
                         id="maxAllow"
                         autoComplete="off"
                     />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        type="number"
-                        name="cost"
-                        label="Giá"
-                        id="cost"
-                        autoComplete="off"
-                    />
-                    {/* <FormControl margin="normal" fullWidth>
-                        <InputLabel id="demo-simple-select-label">
-                            Role
-                        </InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={role.toString()}
-                            label="Role"
-                            onChange={handleChange}
-                        >
-                            <MenuItem value={UserRole.Tenant}>
-                                Người thuê
-                            </MenuItem>
-                            <MenuItem value={UserRole.Lessor}>Chủ nhà</MenuItem>
-                            <MenuItem value={UserRole.Admin}>
-                                Quản trị viên
-                            </MenuItem>
-                        </Select>
-                    </FormControl> */}
+                    <TextField size="small" margin="normal" required fullWidth type="number" name="cost" label="Giá phòng" id="cost" autoComplete="off" />
+                    <TextField size="small" margin="normal" required fullWidth type="number" name="acreage" label="Diện tích" id="acreage" autoComplete="off" />
+                    <TextField size="small" margin="normal" fullWidth type="number" name="deposit" label="Tiền cọc" id="deposit" autoComplete="off" />
+                    <Grid>
+                        <Stack>
+                            <FormLabel>Tiện ích</FormLabel>
+                        </Stack>
+                        {equipmentOptions.map((item) => {
+                            const { value, label } = item;
+                            return <FormControlLabel control={<Checkbox />} label={label} />;
+                        })}
+                    </Grid>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>

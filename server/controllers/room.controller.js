@@ -3,16 +3,29 @@ const { pool } = require("../db");
 const jwt = require("jsonwebtoken");
 const RoomModel = require("../models/room.model");
 const ApartmentModel = require("../models/apartment.model");
+const EquipmentModel = require("../models/equipment.model");
 
 const createRoom = async (req, res) => {
     try {
-        const { name, address, status, cost, maxAllow, apartmentId } = req.body;
+        const { name, address, status, cost, maxAllow, apartmentId, acreage, equipments } = req.body;
         // validate data
         if (!name || !address || !cost || !maxAllow || !apartmentId) {
             res.json({
                 error: "Missing required fields",
             });
             return;
+        }
+
+        if (Array.isArray(equipments)) {
+            await Promise.all(
+                equipments.map((equipment) => {
+                    const { name } = equipment;
+                    return EquipmentModel.create({
+                        name,
+                        count: 0,
+                    });
+                })
+            );
         }
 
         const newRoom = await RoomModel.create({
@@ -22,6 +35,8 @@ const createRoom = async (req, res) => {
             maxAllow,
             status: 0,
             apartmentId,
+            acreage,
+            deposit,
         });
         res.json({
             data: newRoom,
