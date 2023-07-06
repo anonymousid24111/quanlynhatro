@@ -4,28 +4,27 @@ const jwt = require("jsonwebtoken");
 const RoomModel = require("../models/room.model");
 const ApartmentModel = require("../models/apartment.model");
 const EquipmentModel = require("../models/equipment.model");
+const ContractModel = require("../models/contract.model");
 
 const createRoom = async (req, res) => {
     try {
-        const { name, address, status, cost, maxAllow, apartmentId, acreage, equipments } = req.body;
+        const {
+            name,
+            address,
+            status,
+            cost,
+            maxAllow,
+            apartmentId,
+            acreage,
+            equipments,
+            deposit,
+        } = req.body;
         // validate data
         if (!name || !address || !cost || !maxAllow || !apartmentId) {
             res.json({
                 error: "Missing required fields",
             });
             return;
-        }
-
-        if (Array.isArray(equipments)) {
-            await Promise.all(
-                equipments.map((equipment) => {
-                    const { name } = equipment;
-                    return EquipmentModel.create({
-                        name,
-                        count: 0,
-                    });
-                })
-            );
         }
 
         const newRoom = await RoomModel.create({
@@ -38,8 +37,68 @@ const createRoom = async (req, res) => {
             acreage,
             deposit,
         });
+        if (Array.isArray(equipments)) {
+            await Promise.all(
+                equipments.map((equipment) => {
+                    const { action, id: itemId, name } = equipment || {};
+                    return EquipmentModel.create({
+                        name,
+                        count: 1,
+                        roomId: newRoom.id,
+                    });
+                })
+            );
+        }
         res.json({
             data: newRoom,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: err,
+        });
+    }
+};
+
+const createContract = async (req, res) => {
+    try {
+        const {
+            cost,
+            deposit,
+            paymentCycle,
+            collectionDate,
+            startDate,
+            endDate,
+            roomId,
+        } = req.body;
+        // validate data
+        if (!cost) {
+            res.json({
+                error: "Missing required fields",
+            });
+            return;
+        }
+
+        const newContract = await ContractModel.create({
+            cost,
+            deposit,
+            paymentCycle,
+            collectionDate,
+            startDate,
+            endDate,
+        });
+        await RoomModel.update(
+            {
+                roomId: newContract.id,
+            },
+            {
+                where: {
+                    id: roomId,
+                },
+            }
+        );
+        res.json({
+            data: newContract,
         });
     } catch (err) {
         console.error(err);
@@ -58,12 +117,43 @@ const updateRoom = async (req, res) => {
             });
             return;
         }
-        const { name, address, status, cost, maxAllow } = req.body;
+        const {
+            name,
+            address,
+            status,
+            cost,
+            maxAllow,
+            acreage,
+            equipments,
+            deposit,
+        } = req.body;
         if (!name || !address || !cost || !maxAllow) {
             res.json({
                 error: "Missing required fields",
             });
             return;
+        }
+
+        if (Array.isArray(equipments)) {
+            await Promise.all(
+                equipments.map((item) => {
+                    const { action, id: itemId, name } = item || {};
+                    if (action === 2) {
+                        return EquipmentModel.destroy({
+                            where: {
+                                id: itemId,
+                            },
+                        });
+                    }
+                    if (action === 0) {
+                        return EquipmentModel.create({
+                            name,
+                            count: 1,
+                            roomId: id,
+                        });
+                    }
+                })
+            );
         }
 
         const currentRoom = await RoomModel.update(
@@ -73,6 +163,8 @@ const updateRoom = async (req, res) => {
                 status,
                 cost,
                 maxAllow,
+                acreage,
+                deposit,
             },
             {
                 where: {
@@ -99,7 +191,7 @@ const getListRoom = async (req, res) => {
             where: {
                 apartmentId: Number(id),
             },
-            include: ApartmentModel,
+            include: [ApartmentModel, EquipmentModel],
         });
         res.json({
             data: roomList,
@@ -151,4 +243,5 @@ module.exports = {
     updateRoom,
     getListRoom,
     deleteRoom,
+    createContract,
 };

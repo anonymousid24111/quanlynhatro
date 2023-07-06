@@ -56,6 +56,29 @@ module.exports = {
                 onDelete: "CASCADE",
             },
         });
+        await queryInterface.createTable("contracts", {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            startDate: Sequelize.DATE,
+            endDate: Sequelize.DATE,
+            cost: Sequelize.INTEGER,
+            deposit: Sequelize.INTEGER,
+            paymentCycle: Sequelize.INTEGER,
+            collectionDate: Sequelize.INTEGER,
+        });
+        await queryInterface.createTable("posts", {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            title: Sequelize.STRING,
+            description: Sequelize.STRING,
+            status: Sequelize.INTEGER,
+        });
         await queryInterface.createTable("rooms", {
             id: {
                 type: DataTypes.INTEGER,
@@ -79,6 +102,26 @@ module.exports = {
                 onUpdate: "CASCADE",
                 onDelete: "CASCADE",
             },
+            contractId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "contracts",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
+            postId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "posts",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
         });
         await queryInterface.createTable("bills", {
             id: {
@@ -89,6 +132,16 @@ module.exports = {
             status: Sequelize.INTEGER,
             applyMonth: Sequelize.DATE,
             totalCost: Sequelize.INTEGER,
+            roomId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "rooms",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
         });
         await queryInterface.createTable("billservices", {
             id: {
@@ -111,19 +164,7 @@ module.exports = {
                 onDelete: "CASCADE",
             },
         });
-        await queryInterface.createTable("contracts", {
-            id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
-            },
-            startDate: Sequelize.DATE,
-            endDate: Sequelize.DATE,
-            cost: Sequelize.INTEGER,
-            deposit: Sequelize.INTEGER,
-            paymentCycle: Sequelize.INTEGER,
-            collectionDate: Sequelize.INTEGER,
-        });
+
         await queryInterface.createTable("equipments", {
             id: {
                 type: DataTypes.INTEGER,
@@ -132,6 +173,16 @@ module.exports = {
             },
             name: Sequelize.STRING,
             count: Sequelize.INTEGER,
+            roomId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "rooms",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
         });
         await queryInterface.createTable("images", {
             id: {
@@ -142,17 +193,18 @@ module.exports = {
             url: Sequelize.STRING,
             alt: Sequelize.STRING,
             type: Sequelize.INTEGER,
-        });
-        await queryInterface.createTable("posts", {
-            id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
+            roomId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "rooms",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
             },
-            title: Sequelize.STRING,
-            description: Sequelize.STRING,
-            status: Sequelize.INTEGER,
         });
+
         await queryInterface.createTable("services", {
             id: {
                 type: DataTypes.INTEGER,
@@ -173,19 +225,29 @@ module.exports = {
                 onUpdate: "CASCADE",
                 onDelete: "CASCADE",
             },
+            billserviceId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "billservices",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
         });
     },
 
     async down(queryInterface, Sequelize) {
+        await queryInterface.dropTable("images");
+        await queryInterface.dropTable("billservices");
         await queryInterface.dropTable("services");
+        await queryInterface.dropTable("equipments");
+        await queryInterface.dropTable("bills");
         await queryInterface.dropTable("rooms");
         await queryInterface.dropTable("apartments");
         await queryInterface.dropTable("userprofiles");
-        await queryInterface.dropTable("bills");
-        await queryInterface.dropTable("billservices");
         await queryInterface.dropTable("contracts");
-        await queryInterface.dropTable("equipments");
-        await queryInterface.dropTable("images");
         await queryInterface.dropTable("posts");
     },
 };

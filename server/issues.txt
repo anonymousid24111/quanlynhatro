@@ -1,6 +1,6 @@
 3. Thông tin phòng
-    Diện tích, Tầng, Tiền cọc(nullable)
-    Tiện ích(Thiết bị trong phong), thêm thiết bị khác
+    Diện tích, Tầng, Tiền cọc(nullable) done
+    Tiện ích(Thiết bị trong phong), thêm thiết bị khác() done
 
 4. Hợp đồng
     Ngày vào, Thời hạn, Tiền PHòng, Tiền cọc(điến trước từ thôgn tin phòng).

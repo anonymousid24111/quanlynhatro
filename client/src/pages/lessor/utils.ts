@@ -1,5 +1,14 @@
 import { nanoid } from "@reduxjs/toolkit";
-import { ApartmentStatus, IApartment, IRoom, IServiceModel, RoomStatus, ServiceAction, ServiceType } from "./models";
+import {
+    ApartmentStatus,
+    IApartment,
+    IRoom,
+    IServiceModel,
+    RoomStatus,
+    ItemAction,
+    ServiceType,
+    IContract,
+} from "./models";
 
 export const defaultApartment: IApartment = {
     id: 0,
@@ -21,6 +30,15 @@ export const defaultRoom: IRoom = {
     maxAllow: 0,
     status: RoomStatus.Available,
     apartmentId: -1,
+    acreage: 0,
+    deposit: 0,
+    equipments: [],
+};
+export const defaultContract: IContract = {
+    collectionDate: 1,
+    cost: 0,
+    deposit: 0,
+    paymentCycle: 1,
 };
 export enum ServiceUnit {
     KWH,
@@ -37,7 +55,7 @@ export const defaultServiceList: IServiceModel[] = [
         type: ServiceType.DienCoDinhTheoDongHo,
         cost: 3500,
         unit: ServiceUnit.KWH,
-        action: ServiceAction.Add,
+        action: ItemAction.Add,
     },
     {
         localId: nanoid(),
@@ -45,7 +63,7 @@ export const defaultServiceList: IServiceModel[] = [
         type: ServiceType.NuocCoDinhTheoNguoi,
         cost: 80000,
         unit: ServiceUnit.Person,
-        action: ServiceAction.Add,
+        action: ItemAction.Add,
     },
     {
         localId: nanoid(),
@@ -53,7 +71,7 @@ export const defaultServiceList: IServiceModel[] = [
         type: ServiceType.MangInternet,
         cost: 3500,
         unit: ServiceUnit.Person,
-        action: ServiceAction.Add,
+        action: ItemAction.Add,
     },
 ];
 
@@ -237,5 +255,36 @@ export const equipmentOptions = [
     {
         label: "Máy giặt",
         value: EquipmentType.MayGiat,
+    },
+];
+
+export const paymentCycleOptions = [
+    {
+        label: "1 tháng",
+        value: 1,
+    },
+    {
+        label: "2 tháng",
+        value: 2,
+    },
+    {
+        label: "3 tháng",
+        value: 3,
+    },
+    {
+        label: "4 tháng",
+        value: 4,
+    },
+    {
+        label: "5 tháng",
+        value: 5,
+    },
+    {
+        label: "6 tháng",
+        value: 6,
+    },
+    {
+        label: "1 năm",
+        value: 12,
     },
 ];

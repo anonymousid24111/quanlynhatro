@@ -13,11 +13,12 @@ import {
 } from "./lessorAction";
 import {
     IAddApartmentDialog,
+    IAddContractDialog,
     IAddRoomDialog,
     IApartment,
     IRoom,
 } from "./models";
-import { defaultApartment, defaultRoom } from "./utils";
+import { defaultApartment, defaultContract, defaultRoom } from "./utils";
 
 // Define a type for the slice state
 
@@ -35,6 +36,7 @@ interface AdminState {
     editApartmentDialog: IAddApartmentDialog;
     addRoomDialog: IAddRoomDialog;
     editRoomDialog: IAddRoomDialog;
+    addContractDialog: IAddContractDialog;
 }
 
 // Define the initial state using that type
@@ -65,6 +67,11 @@ const initialState: AdminState = {
         isOpen: false,
         status: PromiseStatus.Fulfilled,
         room: defaultRoom,
+    },
+    addContractDialog: {
+        isOpen: false,
+        status: PromiseStatus.Fulfilled,
+        contract: defaultContract,
     },
 };
 
@@ -100,11 +107,20 @@ export const lessorSlice = createSlice({
         setIsOpenAddRoomDialog: (state, action: PayloadAction<boolean>) => {
             state.addRoomDialog.isOpen = action.payload;
         },
+        setIsOpenAddContractDialog: (state, action: PayloadAction<boolean>) => {
+            state.addContractDialog.isOpen = action.payload;
+        },
         setAddDialog: (state, action: PayloadAction<IAddApartmentDialog>) => {
             state.addApartmentDialog = action.payload;
         },
         setAddRoomDialog: (state, action: PayloadAction<IAddRoomDialog>) => {
             state.addRoomDialog = action.payload;
+        },
+        setAddContractDialog: (
+            state,
+            action: PayloadAction<IAddContractDialog>
+        ) => {
+            state.addContractDialog = action.payload;
         },
         setIsOpenEditDialog: (state, action: PayloadAction<boolean>) => {
             state.editApartmentDialog.isOpen = action.payload;
@@ -117,6 +133,12 @@ export const lessorSlice = createSlice({
         },
         setEditRoomDialog: (state, action: PayloadAction<IAddRoomDialog>) => {
             state.editRoomDialog = action.payload;
+        },
+        setEditContractDialog: (
+            state,
+            action: PayloadAction<IAddContractDialog>
+        ) => {
+            state.addContractDialog = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -196,6 +218,9 @@ export const {
     setIsOpenEditRoomDialog,
     setRoomListPage,
     setSelectedRoom,
+    setAddContractDialog,
+    setEditContractDialog,
+    setIsOpenAddContractDialog,
 } = lessorSlice.actions;
 
 export default lessorSlice.reducer;

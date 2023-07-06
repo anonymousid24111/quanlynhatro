@@ -24,9 +24,9 @@ var UserProfile = sequelize.define("userprofile", {
     placeOfIssue: Sequelize.STRING,
 });
 
-UserProfile.hasMany(ApartmentModel, { foreignKey: { allowNull: false } });
+UserProfile.hasMany(ApartmentModel, { foreignKey: { allowNull: true } });
 ApartmentModel.belongsTo(UserProfile);
-UserProfile.hasMany(ImageModel, { foreignKey: { allowNull: false } });
+UserProfile.hasMany(ImageModel, { foreignKey: { allowNull: true } });
 ImageModel.belongsTo(UserProfile);
 
 module.exports = UserProfile;

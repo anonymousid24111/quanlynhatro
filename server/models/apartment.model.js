@@ -20,9 +20,9 @@ var ApartmentModel = sequelize.define("apartment", {
 });
 
 // define the Apartment-Room association
-ApartmentModel.hasMany(RoomModel, { foreignKey: { allowNull: false } });
+ApartmentModel.hasMany(RoomModel, { foreignKey: { allowNull: true } });
 RoomModel.belongsTo(ApartmentModel);
-ApartmentModel.hasMany(ServiceModel, { foreignKey: { allowNull: false } });
+ApartmentModel.hasMany(ServiceModel, { foreignKey: { allowNull: true } });
 ServiceModel.belongsTo(ApartmentModel);
 
 module.exports = ApartmentModel;

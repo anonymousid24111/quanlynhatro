@@ -14,7 +14,7 @@ var BillServiceModel = sequelize.define("billservice", {
     totalCost: Sequelize.INTEGER,
 });
 
-BillServiceModel.hasMany(ServiceModel, { foreignKey: { allowNull: false } });
+BillServiceModel.hasMany(ServiceModel, { foreignKey: { allowNull: true } });
 ServiceModel.belongsTo(BillServiceModel);
 
 module.exports = BillServiceModel;

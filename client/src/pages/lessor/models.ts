@@ -1,4 +1,5 @@
 import { PromiseStatus } from "../../utils";
+import { EquipmentType } from "./utils";
 
 export enum ApartmentStatus {
     Available = 0,
@@ -36,14 +37,14 @@ export interface IService {
     unit: string | number;
 }
 
-export enum ServiceAction {
+export enum ItemAction {
     Add = 0,
     Edit = 1,
     Delete = 2,
 }
 export interface IServiceModel extends IService {
     localId: string;
-    action: ServiceAction;
+    action: ItemAction;
 }
 
 export interface IApartment {
@@ -58,6 +59,15 @@ export interface IApartment {
     ward_code: number;
     services: IService[];
 }
+export interface IEquipment {
+    id: number;
+    name: EquipmentType;
+}
+
+export interface IEquipmentModel extends IEquipment {
+    localId: string;
+    action: ItemAction;
+}
 export interface IRoom {
     id: number;
     name: string;
@@ -66,6 +76,9 @@ export interface IRoom {
     status: RoomStatus;
     cost: number;
     apartmentId: number;
+    equipments: IEquipment[];
+    acreage: number;
+    deposit: number;
 }
 
 export interface IAddApartmentDialog {
@@ -78,4 +91,18 @@ export interface IAddRoomDialog {
     isOpen: boolean;
     room: IRoom;
     status: PromiseStatus;
+}
+export interface IAddContractDialog {
+    isOpen: boolean;
+    contract: IContract;
+    status: PromiseStatus;
+}
+
+export interface IContract {
+    startDate?: string;
+    endDate?: string;
+    cost: number;
+    deposit: number;
+    paymentCycle: number;
+    collectionDate: number;
 }

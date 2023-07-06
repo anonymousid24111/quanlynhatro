@@ -25,7 +25,7 @@ import {
     ApartmentStatus,
     IApartment,
     IServiceModel,
-    ServiceAction,
+    ItemAction,
 } from "../../models";
 import { serviceTypeOptions, serviceUnitOptions } from "../../utils";
 import { IAddress } from "./AddDialog";
@@ -52,7 +52,7 @@ export default function EditDialog(props: IAddDialogProps) {
                 apartment.services.map((item) => ({
                     ...item,
                     localId: nanoid(),
-                    action: ServiceAction.Edit,
+                    action: ItemAction.Edit,
                 }))
             );
     }, [apartment.services]);
@@ -287,7 +287,7 @@ export default function EditDialog(props: IAddDialogProps) {
                                         name: "",
                                         type: 0,
                                         unit: "",
-                                        action: ServiceAction.Add,
+                                        action: ItemAction.Add,
                                     },
                                 ]);
                             }}
@@ -300,7 +300,7 @@ export default function EditDialog(props: IAddDialogProps) {
                             serviceList
                                 .filter(
                                     (item) =>
-                                        item.action !== ServiceAction.Delete
+                                        item.action !== ItemAction.Delete
                                 )
                                 .map((service) => {
                                     const {
@@ -526,7 +526,7 @@ export default function EditDialog(props: IAddDialogProps) {
                                                             localId,
                                                             {
                                                                 key: "action",
-                                                                value: ServiceAction.Delete,
+                                                                value: ItemAction.Delete,
                                                             }
                                                         );
                                                     }}

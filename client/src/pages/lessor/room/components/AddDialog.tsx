@@ -1,4 +1,12 @@
-import { Box, Checkbox, FormControlLabel, FormLabel, Grid, SelectChangeEvent, Stack } from "@mui/material";
+import {
+    Box,
+    Checkbox,
+    FormControlLabel,
+    FormLabel,
+    Grid,
+    SelectChangeEvent,
+    Stack,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -8,8 +16,9 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { UserRole } from "../../../auth/models";
-import { IRoom, RoomStatus } from "../../models";
-import { equipmentOptions } from "../../utils";
+import { IEquipmentModel, IRoom, ItemAction, RoomStatus } from "../../models";
+import { EquipmentType, equipmentOptions } from "../../utils";
+import { nanoid } from "@reduxjs/toolkit";
 
 export interface IAddDialogProps {
     isOpen: boolean;
@@ -25,9 +34,35 @@ export default function AddDialog(props: IAddDialogProps) {
         onClose();
     };
     const [role, setRole] = useState<UserRole>(UserRole.Guest);
+    const [equipments, setEquipments] = useState<IEquipmentModel[]>([]);
 
-    const handleChange = (event: SelectChangeEvent) => {
-        setRole(Number(event.target.value) as UserRole);
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const currentItemIndex = equipments.findIndex(
+            (x) => x.name === (event.target.value as EquipmentType)
+        );
+        if (currentItemIndex > -1) {
+            setEquipments([
+                ...equipments.slice(0, currentItemIndex),
+                {
+                    ...equipments[currentItemIndex],
+                    action: event.target.checked
+                        ? ItemAction.Edit
+                        : ItemAction.Delete,
+                    name: event.target.value as EquipmentType,
+                },
+                ...equipments.slice(currentItemIndex + 1),
+            ]);
+        } else {
+            setEquipments([
+                ...equipments,
+                {
+                    action: ItemAction.Add,
+                    name: event.target.value as EquipmentType,
+                    id: 0,
+                    localId: nanoid(),
+                },
+            ]);
+        }
     };
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -40,13 +75,20 @@ export default function AddDialog(props: IAddDialogProps) {
             cost: Number(formData.get("cost")) || 0,
             status: RoomStatus.Available,
             apartmentId: Number(searchParams.get("apartmentId")),
-            // equipments: [],
+            acreage: Number(formData.get("acreage")),
+            deposit: Number(formData.get("deposit")),
+            equipments: equipments || [],
         });
     };
 
     return (
         <Dialog open={isOpen} onClose={handleClose}>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Box
+                component="form"
+                onSubmit={handleSubmit}
+                noValidate
+                sx={{ mt: 1 }}
+            >
                 <DialogTitle>Thêm phòng</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -84,16 +126,56 @@ export default function AddDialog(props: IAddDialogProps) {
                         id="maxAllow"
                         autoComplete="off"
                     />
-                    <TextField size="small" margin="normal" required fullWidth type="number" name="cost" label="Giá phòng" id="cost" autoComplete="off" />
-                    <TextField size="small" margin="normal" required fullWidth type="number" name="acreage" label="Diện tích" id="acreage" autoComplete="off" />
-                    <TextField size="small" margin="normal" fullWidth type="number" name="deposit" label="Tiền cọc" id="deposit" autoComplete="off" />
+                    <TextField
+                        size="small"
+                        margin="normal"
+                        required
+                        fullWidth
+                        type="number"
+                        name="cost"
+                        label="Giá phòng"
+                        id="cost"
+                        autoComplete="off"
+                    />
+                    <TextField
+                        size="small"
+                        margin="normal"
+                        required
+                        fullWidth
+                        type="number"
+                        name="acreage"
+                        label="Diện tích"
+                        id="acreage"
+                        autoComplete="off"
+                    />
+                    <TextField
+                        size="small"
+                        margin="normal"
+                        fullWidth
+                        type="number"
+                        name="deposit"
+                        label="Tiền cọc"
+                        id="deposit"
+                        autoComplete="off"
+                    />
                     <Grid>
                         <Stack>
                             <FormLabel>Tiện ích</FormLabel>
                         </Stack>
                         {equipmentOptions.map((item) => {
                             const { value, label } = item;
-                            return <FormControlLabel control={<Checkbox />} label={label} />;
+                            return (
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            value={value}
+                                            name="equipment"
+                                            onChange={handleChange}
+                                        />
+                                    }
+                                    label={label}
+                                />
+                            );
                         })}
                     </Grid>
                 </DialogContent>

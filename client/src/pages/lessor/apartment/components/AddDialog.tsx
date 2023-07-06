@@ -24,7 +24,7 @@ import {
     ApartmentStatus,
     IApartment,
     IServiceModel,
-    ServiceAction,
+    ItemAction,
 } from "../../models";
 import {
     defaultServiceList,
@@ -258,7 +258,7 @@ export default function AddDialog(props: IAddDialogProps) {
                                         name: "",
                                         type: 0,
                                         unit: "",
-                                        action: ServiceAction.Add,
+                                        action: ItemAction.Add,
                                     },
                                 ]);
                             }}
@@ -271,7 +271,7 @@ export default function AddDialog(props: IAddDialogProps) {
                             serviceList
                                 .filter(
                                     (item) =>
-                                        item.action !== ServiceAction.Delete
+                                        item.action !== ItemAction.Delete
                                 )
                                 .map((service) => {
                                     const { cost, name, type, unit, localId } =
@@ -493,7 +493,7 @@ export default function AddDialog(props: IAddDialogProps) {
                                                             localId,
                                                             {
                                                                 key: "action",
-                                                                value: ServiceAction.Delete,
+                                                                value: ItemAction.Delete,
                                                             }
                                                         );
                                                         // setServiceList(

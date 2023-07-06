@@ -1,5 +1,5 @@
 import fetchHandler from "../../config/axios";
-import { IApartment, IRoom } from "./models";
+import { IApartment, IContract, IRoom } from "./models";
 
 export const getApartments = () => {
     return fetchHandler.get("/apartment/list");
@@ -26,6 +26,9 @@ export const getRooms = ({ id }: { id: number }) => {
 };
 export const addRoom = (apartment: IRoom) => {
     return fetchHandler.post("/room/create", apartment);
+};
+export const addContract = (apartment: IContract) => {
+    return fetchHandler.post("/room/createContract", apartment);
 };
 export const updateRoom = (apartment: IRoom) => {
     return fetchHandler.post("/room/update/" + apartment.id, apartment);

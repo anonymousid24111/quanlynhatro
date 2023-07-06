@@ -14,7 +14,7 @@ var PostModel = sequelize.define("post", {
     status: Sequelize.INTEGER,
 });
 
-PostModel.hasOne(RoomModel, { foreignKey: { allowNull: false } });
+PostModel.hasOne(RoomModel, { foreignKey: { allowNull: true } });
 RoomModel.belongsTo(PostModel);
 
 module.exports = PostModel;

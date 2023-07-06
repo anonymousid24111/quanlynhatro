@@ -17,7 +17,7 @@ var ContractModel = sequelize.define("contract", {
 });
 
 // define the Apartment-Room association
-ContractModel.hasOne(RoomModel, { foreignKey: { allowNull: false } });
+ContractModel.hasOne(RoomModel, { foreignKey: { allowNull: true } });
 RoomModel.belongsTo(ContractModel);
 
 module.exports = ContractModel;

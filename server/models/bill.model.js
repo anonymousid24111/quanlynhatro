@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const { sequelize } = require("../db");
 const BillServiceModel = require("./billservice.model");
+const RoomModel = require("./room.model");
 
 var BillModel = sequelize.define("bill", {
     id: {
@@ -13,7 +14,7 @@ var BillModel = sequelize.define("bill", {
     totalCost: Sequelize.INTEGER,
 });
 
-BillModel.hasMany(BillServiceModel, { foreignKey: { allowNull: false } });
+BillModel.hasMany(BillServiceModel, { foreignKey: { allowNull: true } });
 BillServiceModel.belongsTo(BillModel);
 
 module.exports = BillModel;
