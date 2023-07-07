@@ -152,6 +152,16 @@ module.exports = {
                 onUpdate: "CASCADE",
                 onDelete: "CASCADE",
             },
+            userprofileId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "userprofiles",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
         });
         await queryInterface.createTable("services", {
             id: {
@@ -245,15 +255,13 @@ module.exports = {
                 onDelete: "CASCADE",
             },
         });
-
-        
     },
 
     async down(queryInterface, Sequelize) {
         await queryInterface.dropTable("images");
         await queryInterface.dropTable("equipments");
-        await queryInterface.dropTable("services");
         await queryInterface.dropTable("billservices");
+        await queryInterface.dropTable("services");
         await queryInterface.dropTable("bills");
         await queryInterface.dropTable("rooms");
         await queryInterface.dropTable("apartments");

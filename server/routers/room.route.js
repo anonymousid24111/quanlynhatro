@@ -8,6 +8,7 @@ const {
     createContract,
     createBill,
     getListBill,
+    updateBill,
 } = require("../controllers/room.controller");
 const { isAuth } = require("../middlewares/auth.middleware");
 
@@ -15,6 +16,7 @@ router.post("/create", isAuth, createRoom);
 router.post("/createContract", isAuth, createContract);
 router.post("/createBill", isAuth, createBill);
 router.post("/update/:id", isAuth, updateRoom);
+router.post("/updateBill/:id", isAuth, updateBill);
 router.delete("/:id", isAuth, deleteRoom);
 router.get("/list", isAuth, getListRoom);
 router.get("/getListBill", isAuth, getListBill);

@@ -24,6 +24,9 @@ export const getRooms = ({ id }: { id: number }) => {
         },
     });
 };
+export const getBills = () => {
+    return fetchHandler.get("/room/getListBill");
+};
 export const addRoom = (apartment: IRoom) => {
     return fetchHandler.post("/room/create", apartment);
 };
@@ -35,4 +38,9 @@ export const addBill = (apartment: IBill) => {
 };
 export const updateRoom = (apartment: IRoom) => {
     return fetchHandler.post("/room/update/" + apartment.id, apartment);
+};
+export const updateBill = (bill: IBill) => {
+    return fetchHandler.post("/room/updateBill/" + bill.id, {
+        status: bill.status || 0,
+    });
 };

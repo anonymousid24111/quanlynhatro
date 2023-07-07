@@ -1,4 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import DoneIcon from "@mui/icons-material/Done";
+import MoneyOffCsredIcon from "@mui/icons-material/MoneyOffCsred";
 import {
     Box,
     Breadcrumbs,
@@ -11,38 +14,32 @@ import {
     Stack,
     Typography,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { PromiseStatus } from "../../../utils";
 import WarningDialog from "../../admin/usermangement/components/WarningDialog";
 import {
-    addBillAsync,
-    addContractAsync,
-    addRoomAsync,
     deleteRoomAsync,
     getApartmentsAsync,
+    getBillsAsync,
     getRoomsAsync,
-    updateRoomAsync,
+    updateBillAsync,
 } from "../lessorAction";
 import {
-    setAddBillDialog,
-    setAddContractDialog,
-    setAddRoomDialog,
-    setEditRoomDialog,
-    setIsOpenAddContractDialog,
     setIsOpenAddRoomDialog,
     setIsOpenDialogConfirmDelete,
     setSelectedRoom,
 } from "../lessorSlice";
-import { IBill, IContract, IRoom } from "../models";
-import { defaultBill, defaultContract, defaultRoom } from "../utils";
+import { IBill } from "../models";
+import { defaultRoom, formatDateMMYYYY } from "../utils";
 
 function Room() {
     let [searchParams, setSearchParams] = useSearchParams();
-    const { apartmentListPage } = useAppSelector((state) => state.lessor);
+    const { billListPage, apartmentListPage } = useAppSelector(
+        (state) => state.lessor
+    );
     const [startDate, setStartDate] = useState<string>();
     const {
         addRoomDialog,
@@ -53,40 +50,23 @@ function Room() {
         roomListPage,
         selectedRoom,
     } = useAppSelector((state) => state.lessor);
-    const { items } = roomListPage;
+    const { items } = billListPage;
     const dispatch = useAppDispatch();
     useEffect(() => {
-        dispatch(
-            getRoomsAsync({
-                id: Number(searchParams.get("apartmentId")),
-            })
-        );
+        dispatch(getBillsAsync());
         dispatch(getApartmentsAsync());
+        if (searchParams.get("apartmentId")) {
+            dispatch(
+                getRoomsAsync({
+                    id: Number(searchParams.get("apartmentId")),
+                })
+            );
+        }
     }, [searchParams.get("apartmentId")]);
     const handleEditClick = (id: number) => () => {
-        const currentRoom = items.find((row: IRoom) => row.id === id);
+        const currentRoom = items.find((row: IBill) => row.id === id);
         if (currentRoom) {
-            dispatch(setSelectedRoom(currentRoom));
-            dispatch(
-                setEditRoomDialog({
-                    isOpen: true,
-                    status: PromiseStatus.Fulfilled,
-                    room: currentRoom,
-                })
-            );
-        }
-    };
-    const handleClickAddNewContract = (id: number) => () => {
-        const currentRoom = items.find((row: IRoom) => row.id === id);
-        if (currentRoom) {
-            dispatch(setSelectedRoom(currentRoom));
-            dispatch(
-                setAddContractDialog({
-                    isOpen: true,
-                    status: PromiseStatus.Fulfilled,
-                    contract: defaultContract,
-                })
-            );
+            // dispatch(setSelectedRoom(currentRoom));
             // dispatch(
             //     setEditRoomDialog({
             //         isOpen: true,
@@ -96,32 +76,27 @@ function Room() {
             // );
         }
     };
-    const handleClickAddBill = (id: number) => () => {
-        const currentRoom = items.find((row: IRoom) => row.id === id);
-        if (currentRoom) {
-            dispatch(setSelectedRoom(currentRoom));
-            dispatch(
-                setAddBillDialog({
-                    isOpen: true,
-                    status: PromiseStatus.Fulfilled,
-                    bill: defaultBill,
-                })
-            );
-            // dispatch(
-            //     setEditRoomDialog({
-            //         isOpen: true,
-            //         status: PromiseStatus.Fulfilled,
-            //         room: currentRoom,
-            //     })
-            // );
-        }
-    };
+    const handleClickCompletePayment =
+        (id: number, status: number) => async () => {
+            const currentRoom = items.find((row: IBill) => row.id === id);
+            if (currentRoom) {
+                const res = await dispatch(
+                    updateBillAsync({
+                        ...currentRoom,
+                        status,
+                    })
+                );
+                if (res.meta.requestStatus === "fulfilled") {
+                    dispatch(getBillsAsync());
+                }
+            }
+        };
 
     const handleDeleteClick = (id: number) => () => {
-        const currentRoom = items.find((row: IRoom) => row.id === id);
+        const currentRoom = items.find((row: IBill) => row.id === id);
 
         if (currentRoom) {
-            dispatch(setSelectedRoom(currentRoom));
+            // dispatch(setSelectedRoom(currentRoom));
             dispatch(setIsOpenDialogConfirmDelete(true));
         }
     };
@@ -131,18 +106,81 @@ function Room() {
             field: "applyMonth",
             headerName: "Hoá đơn tháng",
             width: 200,
+            valueGetter: (params: any) => {
+                return formatDateMMYYYY(params.value);
+            },
         },
         {
-            field: "Tổng tiền thanh toán",
-            headerName: "Tổng tiền thanh toán",
-            width: 300,
+            field: "room.apartment",
+            headerName: "Nhà",
+            width: 200,
+            renderCell: (params: any) => {
+                console.log("params", params);
+                return `${params?.row?.room?.apartment?.name || ""}`;
+            },
         },
         {
             field: "room",
             headerName: "Phòng",
+            width: 200,
+            valueGetter: (params: any) => {
+                return `${params?.value?.name || ""}`;
+            },
+        },
+        {
+            field: "userprofile",
+            headerName: "Khách",
+            width: 200,
+            valueGetter: (params: any) => {
+                return `${params?.value?.username || ""}`;
+            },
+        },
+        {
+            field: "totalCost",
+            headerName: "Tổng tiền thanh toán",
+            width: 300,
+        },
+        {
+            field: "status",
+            headerName: "Trạng thái",
             width: 160,
             valueGetter: (params: any) => {
-                return params.value.name;
+                if (!params.value) return "Chưa thanh toán";
+                return "Đã thanh toán";
+            },
+        },
+        {
+            field: "actions",
+            type: "actions",
+            headerName: "Actions",
+            width: 250,
+            cellClassName: "actions",
+            getActions: ({ id, row }: any) => {
+                return [
+                    row.status ? (
+                        <GridActionsCellItem
+                            icon={<MoneyOffCsredIcon />}
+                            label="Chưa thanh toán"
+                            className="textPrimary"
+                            onClick={handleClickCompletePayment(id, 0)}
+                            color="inherit"
+                        />
+                    ) : (
+                        <GridActionsCellItem
+                            icon={<DoneIcon />}
+                            label="Thanh toán"
+                            className="textPrimary"
+                            onClick={handleClickCompletePayment(id, 1)}
+                            color="inherit"
+                        />
+                    ),
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={handleDeleteClick(id)}
+                        color="inherit"
+                    />,
+                ];
             },
         },
     ];
@@ -163,65 +201,6 @@ function Room() {
         }
     };
 
-    const onAddRoom = async (room: IRoom) => {
-        console.log("user", room);
-        const res = await dispatch(addRoomAsync(room));
-        if (res.payload?.data?.id) {
-            dispatch(
-                getRoomsAsync({
-                    id: Number(searchParams.get("apartmentId")),
-                })
-            );
-            dispatch(
-                setAddRoomDialog({
-                    isOpen: false,
-                    status: PromiseStatus.Fulfilled,
-                    room: defaultRoom,
-                })
-            );
-        }
-    };
-    const onAddContract = async (contract: IContract) => {
-        console.log("contract", contract);
-        const res = await dispatch(addContractAsync(contract));
-        if (res.payload?.data?.id) {
-            dispatch(
-                getRoomsAsync({
-                    id: Number(searchParams.get("apartmentId")),
-                })
-            );
-            dispatch(setIsOpenAddContractDialog(false));
-        }
-    };
-    const onAddBill = async (bill: IBill) => {
-        console.log("bill", bill);
-        const res = await dispatch(addBillAsync(bill));
-        if (res.payload?.data?.id) {
-            dispatch(
-                getRoomsAsync({
-                    id: Number(searchParams.get("apartmentId")),
-                })
-            );
-            dispatch(setIsOpenAddContractDialog(false));
-        }
-    };
-    const onEditRoom = async (room: IRoom) => {
-        console.log("user", room);
-        const res = await dispatch(updateRoomAsync(room));
-        console.log("res", res);
-        if (res.payload.data?.[0]) {
-            dispatch(
-                getRoomsAsync({
-                    id: Number(searchParams.get("apartmentId")),
-                })
-            );
-            setEditRoomDialog({
-                isOpen: false,
-                status: PromiseStatus.Fulfilled,
-                room: defaultRoom,
-            });
-        }
-    };
     return (
         <div style={{ height: 400, width: "100%" }}>
             <WarningDialog
@@ -235,7 +214,9 @@ function Room() {
                     <Link underline="hover" color="inherit" href="/">
                         Lessor
                     </Link>
-                    <Typography color="text.primary">Quản lý hoá đơn</Typography>
+                    <Typography color="text.primary">
+                        Quản lý hoá đơn
+                    </Typography>
                 </Breadcrumbs>
             </Stack>
             <Stack
@@ -244,7 +225,7 @@ function Room() {
                 spacing={2}
                 margin={"8px 12px"}
             >
-                <Button
+                {/* <Button
                     variant="contained"
                     endIcon={<AddIcon />}
                     onClick={() => {
@@ -252,7 +233,7 @@ function Room() {
                     }}
                 >
                     Thêm phòng
-                </Button>
+                </Button> */}
                 <Box sx={{ width: 120 }}>
                     <FormControl margin="normal" fullWidth>
                         <InputLabel id="demo-simple-select-label">
@@ -283,10 +264,40 @@ function Room() {
                         </Select>
                     </FormControl>
                 </Box>
+                <Box sx={{ width: 120 }}>
+                    <FormControl margin="normal" fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                            Phòng
+                        </InputLabel>
+                        <Select
+                            size="small"
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={Number(searchParams.get("apartmentId"))}
+                            label="Role"
+                            onChange={(event) => {
+                                // navigate("/lessor/room?aparmentId")
+                                setSearchParams({
+                                    roomId: event.target.value.toString(),
+                                });
+                            }}
+                        >
+                            {Array.isArray(roomListPage.items)
+                                ? roomListPage.items.map((item) => {
+                                      return (
+                                          <MenuItem value={item.id}>
+                                              {item.name}
+                                          </MenuItem>
+                                      );
+                                  })
+                                : []}
+                        </Select>
+                    </FormControl>
+                </Box>
             </Stack>
             <br />
             <DataGrid
-                rows={items}
+                rows={billListPage.items || []}
                 columns={columns}
                 initialState={{
                     pagination: {

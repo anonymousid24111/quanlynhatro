@@ -109,6 +109,7 @@ export interface IBillService extends IService {
     totalCost: number;
 }
 export interface IBill {
+    id: number;
     status: number;
     applyMonth: string;
     totalCost: number;

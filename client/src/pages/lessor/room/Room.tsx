@@ -1,8 +1,8 @@
 import { Add } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/Edit";
-import AssignmentIcon from "@mui/icons-material/Assignment";
 import {
     Box,
     Breadcrumbs,
@@ -16,7 +16,7 @@ import {
     Typography,
 } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
@@ -43,13 +43,12 @@ import {
     setIsOpenEditRoomDialog,
     setSelectedRoom,
 } from "../lessorSlice";
-import { IAddBillDialog, IBill, IContract, IRoom, RoomStatus } from "../models";
+import { IBill, IContract, IRoom, RoomStatus } from "../models";
 import { defaultBill, defaultContract, defaultRoom } from "../utils";
 import AddDialog from "./components/AddDialog";
+import AddDialogBill from "./components/AddDialogBill";
 import AddDialogContract from "./components/AddDialogContract";
 import EditDialog from "./components/EditDialog";
-import { useState } from "react";
-import AddDialogBill from "./components/AddDialogBill";
 
 function Room() {
     let [searchParams, setSearchParams] = useSearchParams();
@@ -157,6 +156,17 @@ function Room() {
             field: "cost",
             headerName: "Giá",
             width: 160,
+        },
+        {
+            field: "contract",
+            headerName: "Hợp đồng đang có",
+            width: 250,
+            renderCell: (params: any) => {
+                console.log("params", params);
+                if (params.row?.contract?.userprofile?.username) {
+                    return `Hợp đồng: ${params.row?.contract?.userprofile?.username}`;
+                }
+            },
         },
         {
             field: "status",

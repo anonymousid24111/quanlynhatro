@@ -131,6 +131,7 @@ const createContract = async (req, res) => {
         await RoomModel.update(
             {
                 contractId: newContract.id,
+                status: 1,
             },
             {
                 where: {
@@ -157,6 +158,7 @@ const createBill = async (req, res) => {
             billservices,
             roomId,
             apartmentId,
+            userprofileId,
         } = req.body;
         // validate data
         if (!totalCost) {
@@ -165,11 +167,18 @@ const createBill = async (req, res) => {
             });
             return;
         }
+        const currentRoom = await RoomModel.findOne({
+            where: {
+                id: roomId,
+            },
+            include: [ApartmentModel],
+        });
         const newBill = await BillModel.create({
             status,
             applyMonth,
             totalCost,
             roomId,
+            userprofileId: currentRoom.apartment.userprofileId,
         });
         if (Array.isArray(billservices)) {
             await Promise.all(
@@ -195,6 +204,38 @@ const createBill = async (req, res) => {
 
         res.json({
             data: newBill,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: err,
+        });
+    }
+};
+const updateBill = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const { id } = req.params;
+        // validate data
+        if (!id) {
+            res.json({
+                error: "Missing required fields",
+            });
+            return;
+        }
+        const currentRoom = await BillModel.update(
+            {
+                status,
+            },
+            {
+                where: {
+                    id: id,
+                },
+            }
+        );
+
+        res.json({
+            data: currentRoom,
         });
     } catch (err) {
         console.error(err);
@@ -293,7 +334,10 @@ const getListRoom = async (req, res) => {
                     include: ServiceModel,
                 },
                 EquipmentModel,
-                ContractModel,
+                {
+                    model: ContractModel,
+                    include: UserProfile,
+                },
             ],
         });
         res.json({
@@ -311,7 +355,19 @@ const getListBill = async (req, res) => {
         console.log("req.query", req.query);
         const { id } = req.query;
         const roomList = await BillModel.findAll({
-            include: [RoomModel],
+            include: [
+                {
+                    model: RoomModel,
+                    include: [
+                        {
+                            model: ApartmentModel,
+                        },
+                    ],
+                },
+                {
+                    model: UserProfile,
+                },
+            ],
         });
         res.json({
             data: roomList,
@@ -362,6 +418,7 @@ module.exports = {
     createRoom,
     updateRoom,
     getListRoom,
+    updateBill,
     deleteRoom,
     createContract,
     createBill,

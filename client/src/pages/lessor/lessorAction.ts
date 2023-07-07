@@ -7,8 +7,10 @@ import {
     deleteApartment,
     deleteRoom,
     getApartments,
+    getBills,
     getRooms,
     updateApartment,
+    updateBill,
     updateRoom,
 } from "./lessorAPI";
 import { IApartment, IBill, IContract, IRoom } from "./models";
@@ -71,6 +73,13 @@ export const updateRoomAsync = createAsyncThunk(
         return response.data;
     }
 );
+export const updateBillAsync = createAsyncThunk(
+    "lessor/updateBill",
+    async (bill: IBill) => {
+        const response = await updateBill(bill);
+        return response.data;
+    }
+);
 
 export const getRoomsAsync = createAsyncThunk(
     "lessor/getRooms",
@@ -82,6 +91,13 @@ export const getRoomsAsync = createAsyncThunk(
         return response.data;
     }
 );
+
+export const getBillsAsync = createAsyncThunk("lessor/getBills", async () => {
+    const response = await getBills();
+    console.log("response", response);
+    return response.data;
+});
+
 export const deleteRoomAsync = createAsyncThunk(
     "lessor/deleteRoom",
     async (id: number) => {

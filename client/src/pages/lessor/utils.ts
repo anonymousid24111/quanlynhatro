@@ -72,6 +72,8 @@ export const defaultBillService: IBillService = {
     totalCost: 0,
     type: ServiceType.DichVuKhac,
     unit: ServiceUnit.Month,
+    localId: nanoid(),
+    action: ItemAction.Add,
 };
 
 export const defaultServiceList: IServiceModel[] = [
@@ -139,6 +141,14 @@ export const defaultBillServiceList: IBillService[] = [
         totalCost: 0,
     },
 ];
+
+export const formatDateMMYYYY = (date?: string) => {
+    if (!date) return "";
+    const currentDate = new Date(date);
+    const yyyy = currentDate.getFullYear();
+    const MM = currentDate.getMonth() + 1;
+    return `${MM}/${yyyy}`;
+};
 
 export const serviceTypeOptions = [
     // {

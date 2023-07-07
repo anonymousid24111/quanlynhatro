@@ -8,8 +8,10 @@ import {
     deleteApartmentAsync,
     deleteRoomAsync,
     getApartmentsAsync,
+    getBillsAsync,
     getRoomsAsync,
     updateApartmentAsync,
+    updateBillAsync,
     updateRoomAsync,
 } from "./lessorAction";
 import {
@@ -18,6 +20,7 @@ import {
     IAddContractDialog,
     IAddRoomDialog,
     IApartment,
+    IBill,
     IRoom,
 } from "./models";
 import {
@@ -36,6 +39,9 @@ interface AdminState {
     roomListPage: {
         items: IRoom[];
     };
+    billListPage: {
+        items: IBill[];
+    };
     selectedApartment?: IApartment;
     selectedRoom?: IRoom;
     isOpenDialogConfirmDelete: boolean;
@@ -53,6 +59,9 @@ const initialState: AdminState = {
         items: [],
     },
     roomListPage: {
+        items: [],
+    },
+    billListPage: {
         items: [],
     },
     isOpenDialogConfirmDelete: false,
@@ -170,6 +179,10 @@ export const lessorSlice = createSlice({
                 const { data } = action.payload || [];
                 state.roomListPage.items = data || [];
             })
+            .addCase(getBillsAsync.fulfilled, (state, action) => {
+                const { data } = action.payload || [];
+                state.billListPage.items = data || [];
+            })
             .addCase(deleteApartmentAsync.fulfilled, (state, action) => {
                 if (action.payload?.error) {
                     toast.error(action.payload.error);
@@ -218,6 +231,19 @@ export const lessorSlice = createSlice({
                         status: PromiseStatus.Fulfilled,
                         room: defaultRoom,
                     };
+                }
+            })
+            .addCase(updateBillAsync.fulfilled, (state, action) => {
+                console.log("action.payload", action.payload);
+                if (action.payload?.error) {
+                    toast.error(action.payload.error);
+                } else {
+                    toast.success("Cập nhật hoá đơn thành công");
+                    // state.editRoomDialog = {
+                    //     isOpen: false,
+                    //     status: PromiseStatus.Fulfilled,
+                    //     room: defaultRoom,
+                    // };
                 }
             })
             .addCase(addBillAsync.fulfilled, (state, action) => {
