@@ -17,6 +17,7 @@ import Login from "./pages/login/Login";
 import SignUp from "./pages/signup/SignUp";
 import Tenant from "./pages/tenant/Tenant";
 import Bill from "./pages/tenant/bill/Bill";
+import BillLessor from "./pages/lessor/bill/Bill";
 import Post from "./pages/tenant/post/Post";
 import Profile from "./pages/tenant/profile/Profile";
 import Room from "./pages/tenant/room/Room";
@@ -81,7 +82,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "bill",
-                element: <Bill />,
+                element: <BillLessor />,
             },
             {
                 path: "apartment",

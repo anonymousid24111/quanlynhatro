@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { PromiseStatus } from "../../utils";
 import {
     addApartmentAsync,
+    addBillAsync,
     deleteApartmentAsync,
     deleteRoomAsync,
     getApartmentsAsync,
@@ -216,6 +217,18 @@ export const lessorSlice = createSlice({
                         isOpen: false,
                         status: PromiseStatus.Fulfilled,
                         room: defaultRoom,
+                    };
+                }
+            })
+            .addCase(addBillAsync.fulfilled, (state, action) => {
+                console.log("action.payload", action.payload);
+                if (action.payload?.error) {
+                    toast.error(action.payload.error);
+                } else {
+                    state.addBillDialog = {
+                        isOpen: false,
+                        status: PromiseStatus.Fulfilled,
+                        bill: defaultBill,
                     };
                 }
             });

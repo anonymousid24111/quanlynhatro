@@ -6,18 +6,20 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { nanoid } from "@reduxjs/toolkit";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
     IBill,
     IBillService,
     IEquipmentModel,
+    IService,
     ItemAction,
     ServiceType,
 } from "../../models";
 import {
     EquipmentType,
     defaultBill,
+    defaultBillService,
     defaultBillServiceList,
 } from "../../utils";
 import { useAppSelector } from "../../../../redux/hooks";
@@ -34,16 +36,39 @@ export interface IAddDialogBillProps {
 export default function AddDialogBill(props: IAddDialogBillProps) {
     const { isOpen, onClose, onSubmit } = props;
     const [searchParams] = useSearchParams();
+    const selectedRoom = useAppSelector((state) => state.lessor.selectedRoom);
 
     const handleClose = () => {
         onClose();
     };
     const [equipments, setEquipments] = useState<IEquipmentModel[]>([]);
     const [applyMonth, setApplyMonth] = useState<string>();
+    console.log(
+        "selectedRoom?.apartment?.services",
+        selectedRoom?.apartment?.services
+    );
 
     const [billservices, setBillservices] = useState<IBillService[]>(
         defaultBillServiceList
     );
+    // defaultBillServiceList
+    useEffect(() => {
+        setBillservices(
+            Array.isArray(selectedRoom?.apartment?.services)
+                ? (selectedRoom?.apartment?.services.map((item: IService) => {
+                      return {
+                          ...defaultBillService,
+                          ...item,
+                          localId: nanoid(),
+                          action: ItemAction.Edit,
+                      } as IBillService;
+                  }) as IBillService[])
+                : []
+        );
+
+        return () => {};
+    }, [selectedRoom?.apartment?.services]);
+    // selectedRoom.apartment
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const currentItemIndex = equipments.findIndex(
@@ -73,16 +98,17 @@ export default function AddDialogBill(props: IAddDialogBillProps) {
             ]);
         }
     };
-    const selectedRoom = useAppSelector((state) => state.lessor.selectedRoom);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         onSubmit({
             applyMonth: applyMonth || "",
-            billservices: [],
+            billservices: billservices,
             status: 0,
-            totalCost: 0,
+            totalCost: billservices.reduce(function (acc, obj) {
+                return acc + obj.totalCost;
+            }, 0),
             roomId: selectedRoom?.id || 0,
         });
     };

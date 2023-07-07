@@ -7,6 +7,9 @@ const EquipmentModel = require("../models/equipment.model");
 const ContractModel = require("../models/contract.model");
 const UserProfile = require("../models/userprofile.model");
 const { USER_ROLE } = require("../consts/user.const");
+const BillModel = require("../models/bill.model");
+const BillServiceModel = require("../models/billservice.model");
+const ServiceModel = require("../models/service.model");
 
 const createRoom = async (req, res) => {
     try {
@@ -145,6 +148,61 @@ const createContract = async (req, res) => {
         });
     }
 };
+const createBill = async (req, res) => {
+    try {
+        const {
+            status,
+            applyMonth,
+            totalCost,
+            billservices,
+            roomId,
+            apartmentId,
+        } = req.body;
+        // validate data
+        if (!totalCost) {
+            res.json({
+                error: "Missing required fields",
+            });
+            return;
+        }
+        const newBill = await BillModel.create({
+            status,
+            applyMonth,
+            totalCost,
+            roomId,
+        });
+        if (Array.isArray(billservices)) {
+            await Promise.all(
+                billservices.map((item) => {
+                    const {
+                        startNumber,
+                        endNumber,
+                        count,
+                        totalCost,
+                        id: serviceId,
+                    } = item || {};
+                    return BillServiceModel.create({
+                        startNumber,
+                        endNumber,
+                        count,
+                        totalCost,
+                        serviceId,
+                        billId: newBill.id,
+                    });
+                })
+            );
+        }
+
+        res.json({
+            data: newBill,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: err,
+        });
+    }
+};
 
 const updateRoom = async (req, res) => {
     try {
@@ -229,7 +287,31 @@ const getListRoom = async (req, res) => {
             where: {
                 apartmentId: Number(id),
             },
-            include: [ApartmentModel, EquipmentModel, ContractModel],
+            include: [
+                {
+                    model: ApartmentModel,
+                    include: ServiceModel,
+                },
+                EquipmentModel,
+                ContractModel,
+            ],
+        });
+        res.json({
+            data: roomList,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: err,
+        });
+    }
+};
+const getListBill = async (req, res) => {
+    try {
+        console.log("req.query", req.query);
+        const { id } = req.query;
+        const roomList = await BillModel.findAll({
+            include: [RoomModel],
         });
         res.json({
             data: roomList,
@@ -282,4 +364,6 @@ module.exports = {
     getListRoom,
     deleteRoom,
     createContract,
+    createBill,
+    getListBill,
 };

@@ -116,7 +116,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: true,
                 references: {
-                    model: "contract",
+                    model: "contracts",
                     key: "id",
                 },
                 onUpdate: "CASCADE",
@@ -153,6 +153,27 @@ module.exports = {
                 onDelete: "CASCADE",
             },
         });
+        await queryInterface.createTable("services", {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            name: Sequelize.STRING,
+            cost: Sequelize.INTEGER,
+            type: Sequelize.INTEGER,
+            unit: Sequelize.STRING,
+            apartmentId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "apartments",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
+        });
         await queryInterface.createTable("billservices", {
             id: {
                 type: DataTypes.INTEGER,
@@ -168,6 +189,16 @@ module.exports = {
                 allowNull: true,
                 references: {
                     model: "bills",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
+            serviceId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "services",
                     key: "id",
                 },
                 onUpdate: "CASCADE",
@@ -215,49 +246,19 @@ module.exports = {
             },
         });
 
-        await queryInterface.createTable("services", {
-            id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
-            },
-            name: Sequelize.STRING,
-            cost: Sequelize.INTEGER,
-            type: Sequelize.INTEGER,
-            unit: Sequelize.STRING,
-            apartmentId: {
-                type: Sequelize.INTEGER,
-                allowNull: true,
-                references: {
-                    model: "apartments",
-                    key: "id",
-                },
-                onUpdate: "CASCADE",
-                onDelete: "CASCADE",
-            },
-            billserviceId: {
-                type: Sequelize.INTEGER,
-                allowNull: true,
-                references: {
-                    model: "billservices",
-                    key: "id",
-                },
-                onUpdate: "CASCADE",
-                onDelete: "CASCADE",
-            },
-        });
+        
     },
 
     async down(queryInterface, Sequelize) {
         await queryInterface.dropTable("images");
-        await queryInterface.dropTable("apartments");
-        await queryInterface.dropTable("userprofiles");
-        await queryInterface.dropTable("billservices");
-        await queryInterface.dropTable("services");
         await queryInterface.dropTable("equipments");
+        await queryInterface.dropTable("services");
+        await queryInterface.dropTable("billservices");
         await queryInterface.dropTable("bills");
         await queryInterface.dropTable("rooms");
+        await queryInterface.dropTable("apartments");
         await queryInterface.dropTable("contracts");
+        await queryInterface.dropTable("userprofiles");
         await queryInterface.dropTable("posts");
     },
 };

@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
     addApartment,
+    addBill,
     addContract,
     addRoom,
     deleteApartment,
@@ -10,7 +11,7 @@ import {
     updateApartment,
     updateRoom,
 } from "./lessorAPI";
-import { IApartment, IContract, IRoom } from "./models";
+import { IApartment, IBill, IContract, IRoom } from "./models";
 
 export const getApartmentsAsync = createAsyncThunk(
     "lessor/getApartments",
@@ -53,6 +54,13 @@ export const addContractAsync = createAsyncThunk(
     "lessor/addContract",
     async (contract: IContract) => {
         const response = await addContract(contract);
+        return response.data;
+    }
+);
+export const addBillAsync = createAsyncThunk(
+    "lessor/addBill",
+    async (bill: IBill) => {
+        const response = await addBill(bill);
         return response.data;
     }
 );

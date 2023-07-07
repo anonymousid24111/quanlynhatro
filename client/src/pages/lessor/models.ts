@@ -77,6 +77,7 @@ export interface IRoom {
     status: RoomStatus;
     cost: number;
     apartmentId: number;
+    apartment?: IApartment;
     equipments: IEquipment[];
     acreage: number;
     deposit: number;
