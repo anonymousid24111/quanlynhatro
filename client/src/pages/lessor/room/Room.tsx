@@ -2,6 +2,7 @@ import { Add } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/Edit";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import {
     Box,
     Breadcrumbs,
@@ -30,21 +31,24 @@ import {
     updateRoomAsync,
 } from "../lessorAction";
 import {
+    setAddBillDialog,
     setAddContractDialog,
     setAddRoomDialog,
     setEditRoomDialog,
+    setIsOpenAddBillDialog,
     setIsOpenAddContractDialog,
     setIsOpenAddRoomDialog,
     setIsOpenDialogConfirmDelete,
     setIsOpenEditRoomDialog,
     setSelectedRoom,
 } from "../lessorSlice";
-import { IContract, IRoom, RoomStatus } from "../models";
-import { defaultContract, defaultRoom } from "../utils";
+import { IAddBillDialog, IBill, IContract, IRoom, RoomStatus } from "../models";
+import { defaultBill, defaultContract, defaultRoom } from "../utils";
 import AddDialog from "./components/AddDialog";
 import AddDialogContract from "./components/AddDialogContract";
 import EditDialog from "./components/EditDialog";
 import { useState } from "react";
+import AddDialogBill from "./components/AddDialogBill";
 
 function Room() {
     let [searchParams, setSearchParams] = useSearchParams();
@@ -53,6 +57,7 @@ function Room() {
     const {
         addRoomDialog,
         addContractDialog,
+        addBillDialog,
         editRoomDialog,
         isOpenDialogConfirmDelete,
         roomListPage,
@@ -92,6 +97,33 @@ function Room() {
                     contract: defaultContract,
                 })
             );
+            // dispatch(
+            //     setEditRoomDialog({
+            //         isOpen: true,
+            //         status: PromiseStatus.Fulfilled,
+            //         room: currentRoom,
+            //     })
+            // );
+        }
+    };
+    const handleClickAddBill = (id: number) => () => {
+        const currentRoom = items.find((row: IRoom) => row.id === id);
+        if (currentRoom) {
+            dispatch(setSelectedRoom(currentRoom));
+            dispatch(
+                setAddBillDialog({
+                    isOpen: true,
+                    status: PromiseStatus.Fulfilled,
+                    bill: defaultBill,
+                })
+            );
+            // dispatch(
+            //     setEditRoomDialog({
+            //         isOpen: true,
+            //         status: PromiseStatus.Fulfilled,
+            //         room: currentRoom,
+            //     })
+            // );
         }
     };
 
@@ -157,7 +189,7 @@ function Room() {
             field: "actions",
             type: "actions",
             headerName: "Actions",
-            width: 100,
+            width: 250,
             cellClassName: "actions",
             getActions: ({ id }: any) => {
                 return [
@@ -166,6 +198,13 @@ function Room() {
                         label="Tạo hợp đồng"
                         className="textPrimary"
                         onClick={handleClickAddNewContract(id)}
+                        color="inherit"
+                    />,
+                    <GridActionsCellItem
+                        icon={<AssignmentIcon />}
+                        label="Lập hoá đơn dịch vụ"
+                        className="textPrimary"
+                        onClick={handleClickAddBill(id)}
                         color="inherit"
                     />,
                     <GridActionsCellItem
@@ -232,6 +271,18 @@ function Room() {
             dispatch(setIsOpenAddContractDialog(false));
         }
     };
+    const onAddBill = async (bill: IBill) => {
+        console.log("contract", bill);
+        // const res = await dispatch(addContractAsync(bill));
+        // if (res.payload?.data?.id) {
+        //     dispatch(
+        //         getRoomsAsync({
+        //             id: Number(searchParams.get("apartmentId")),
+        //         })
+        //     );
+        //     dispatch(setIsOpenAddContractDialog(false));
+        // }
+    };
     const onEditRoom = async (room: IRoom) => {
         console.log("user", room);
         const res = await dispatch(updateRoomAsync(room));
@@ -266,6 +317,11 @@ function Room() {
                 isOpen={addContractDialog.isOpen}
                 onClose={() => dispatch(setIsOpenAddContractDialog(false))}
                 onSubmit={onAddContract}
+            />
+            <AddDialogBill
+                isOpen={addBillDialog.isOpen}
+                onClose={() => dispatch(setIsOpenAddBillDialog(false))}
+                onSubmit={onAddBill}
             />
             <EditDialog
                 isOpen={editRoomDialog.isOpen}

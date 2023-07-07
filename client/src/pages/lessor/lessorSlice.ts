@@ -13,12 +13,18 @@ import {
 } from "./lessorAction";
 import {
     IAddApartmentDialog,
+    IAddBillDialog,
     IAddContractDialog,
     IAddRoomDialog,
     IApartment,
     IRoom,
 } from "./models";
-import { defaultApartment, defaultContract, defaultRoom } from "./utils";
+import {
+    defaultApartment,
+    defaultBill,
+    defaultContract,
+    defaultRoom,
+} from "./utils";
 
 // Define a type for the slice state
 
@@ -37,6 +43,7 @@ interface AdminState {
     addRoomDialog: IAddRoomDialog;
     editRoomDialog: IAddRoomDialog;
     addContractDialog: IAddContractDialog;
+    addBillDialog: IAddBillDialog;
 }
 
 // Define the initial state using that type
@@ -73,6 +80,11 @@ const initialState: AdminState = {
         status: PromiseStatus.Fulfilled,
         contract: defaultContract,
     },
+    addBillDialog: {
+        isOpen: false,
+        status: PromiseStatus.Fulfilled,
+        bill: defaultBill,
+    },
 };
 
 export const lessorSlice = createSlice({
@@ -107,6 +119,9 @@ export const lessorSlice = createSlice({
         setIsOpenAddRoomDialog: (state, action: PayloadAction<boolean>) => {
             state.addRoomDialog.isOpen = action.payload;
         },
+        setIsOpenAddBillDialog: (state, action: PayloadAction<boolean>) => {
+            state.addBillDialog.isOpen = action.payload;
+        },
         setIsOpenAddContractDialog: (state, action: PayloadAction<boolean>) => {
             state.addContractDialog.isOpen = action.payload;
         },
@@ -115,6 +130,9 @@ export const lessorSlice = createSlice({
         },
         setAddRoomDialog: (state, action: PayloadAction<IAddRoomDialog>) => {
             state.addRoomDialog = action.payload;
+        },
+        setAddBillDialog: (state, action: PayloadAction<IAddBillDialog>) => {
+            state.addBillDialog = action.payload;
         },
         setAddContractDialog: (
             state,
@@ -221,6 +239,8 @@ export const {
     setAddContractDialog,
     setEditContractDialog,
     setIsOpenAddContractDialog,
+    setAddBillDialog,
+    setIsOpenAddBillDialog,
 } = lessorSlice.actions;
 
 export default lessorSlice.reducer;

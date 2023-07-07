@@ -1,4 +1,5 @@
 import { PromiseStatus } from "../../utils";
+import { IUserInfo } from "../auth/models";
 import { EquipmentType } from "./utils";
 
 export enum ApartmentStatus {
@@ -98,6 +99,28 @@ export interface IAddContractDialog {
     status: PromiseStatus;
 }
 
+export interface IBillService extends IService {
+    localId: string;
+    action: ItemAction;
+    startNumber: number;
+    endNumber: number;
+    count: number;
+    totalCost: number;
+}
+export interface IBill {
+    status: number;
+    applyMonth: string;
+    totalCost: number;
+    billservices: IBillService[];
+    roomId: number;
+}
+export interface IAddBillDialog {
+    isOpen: boolean;
+    bill: IBill;
+    status: PromiseStatus;
+}
+
+export interface ICustomer extends IUserInfo {}
 export interface IContract {
     startDate?: string;
     endDate?: string;
@@ -105,4 +128,6 @@ export interface IContract {
     deposit: number;
     paymentCycle: number;
     collectionDate: number;
+    customer: ICustomer;
+    roomId: number;
 }

@@ -5,6 +5,8 @@ const RoomModel = require("../models/room.model");
 const ApartmentModel = require("../models/apartment.model");
 const EquipmentModel = require("../models/equipment.model");
 const ContractModel = require("../models/contract.model");
+const UserProfile = require("../models/userprofile.model");
+const { USER_ROLE } = require("../consts/user.const");
 
 const createRoom = async (req, res) => {
     try {
@@ -70,7 +72,23 @@ const createContract = async (req, res) => {
             startDate,
             endDate,
             roomId,
+            customer,
         } = req.body;
+        const {
+            email,
+            phone,
+            address,
+            idNumber,
+            placeOfIssue,
+            role,
+            username,
+            id,
+            city_code,
+            district_code,
+            ward_code,
+            birthDay,
+            dateOfIssue,
+        } = customer || {};
         // validate data
         if (!cost) {
             res.json({
@@ -78,7 +96,26 @@ const createContract = async (req, res) => {
             });
             return;
         }
-
+        let newUser;
+        try {
+            newUser = await UserProfile.create({
+                email,
+                phone,
+                address,
+                idnumber: idNumber,
+                placeOfIssue,
+                role: USER_ROLE.Tenant,
+                username,
+                // id,
+                city_code,
+                district_code,
+                ward_code,
+                birthDay,
+                dateOfIssue,
+            });
+        } catch (error) {
+            console.log("Create User Error");
+        }
         const newContract = await ContractModel.create({
             cost,
             deposit,
@@ -86,10 +123,11 @@ const createContract = async (req, res) => {
             collectionDate,
             startDate,
             endDate,
+            userprofileId: newUser ? newUser.id : undefined,
         });
         await RoomModel.update(
             {
-                roomId: newContract.id,
+                contractId: newContract.id,
             },
             {
                 where: {
@@ -191,7 +229,7 @@ const getListRoom = async (req, res) => {
             where: {
                 apartmentId: Number(id),
             },
-            include: [ApartmentModel, EquipmentModel],
+            include: [ApartmentModel, EquipmentModel, ContractModel],
         });
         res.json({
             data: roomList,

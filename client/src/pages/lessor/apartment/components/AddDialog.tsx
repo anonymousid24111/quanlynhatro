@@ -270,8 +270,7 @@ export default function AddDialog(props: IAddDialogProps) {
                         {Array.isArray(serviceList) &&
                             serviceList
                                 .filter(
-                                    (item) =>
-                                        item.action !== ItemAction.Delete
+                                    (item) => item.action !== ItemAction.Delete
                                 )
                                 .map((service) => {
                                     const { cost, name, type, unit, localId } =

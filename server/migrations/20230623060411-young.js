@@ -68,6 +68,16 @@ module.exports = {
             deposit: Sequelize.INTEGER,
             paymentCycle: Sequelize.INTEGER,
             collectionDate: Sequelize.INTEGER,
+            userprofileId: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: "userprofiles",
+                    key: "id",
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+            },
         });
         await queryInterface.createTable("posts", {
             id: {
@@ -106,7 +116,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: true,
                 references: {
-                    model: "contracts",
+                    model: "contract",
                     key: "id",
                 },
                 onUpdate: "CASCADE",
@@ -240,13 +250,13 @@ module.exports = {
 
     async down(queryInterface, Sequelize) {
         await queryInterface.dropTable("images");
+        await queryInterface.dropTable("apartments");
+        await queryInterface.dropTable("userprofiles");
         await queryInterface.dropTable("billservices");
         await queryInterface.dropTable("services");
         await queryInterface.dropTable("equipments");
         await queryInterface.dropTable("bills");
         await queryInterface.dropTable("rooms");
-        await queryInterface.dropTable("apartments");
-        await queryInterface.dropTable("userprofiles");
         await queryInterface.dropTable("contracts");
         await queryInterface.dropTable("posts");
     },

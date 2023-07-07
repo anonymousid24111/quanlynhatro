@@ -2,6 +2,7 @@ const { Sequelize, DataTypes } = require("sequelize");
 const { sequelize } = require("../db");
 const ApartmentModel = require("./apartment.model");
 const ImageModel = require("./image.model");
+const ContractModel = require("./contract.model");
 
 var UserProfile = sequelize.define("userprofile", {
     id: {
@@ -26,6 +27,8 @@ var UserProfile = sequelize.define("userprofile", {
 
 UserProfile.hasMany(ApartmentModel, { foreignKey: { allowNull: true } });
 ApartmentModel.belongsTo(UserProfile);
+UserProfile.hasMany(ContractModel, { foreignKey: { allowNull: true } });
+ContractModel.belongsTo(UserProfile);
 UserProfile.hasMany(ImageModel, { foreignKey: { allowNull: true } });
 ImageModel.belongsTo(UserProfile);
 

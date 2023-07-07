@@ -11,4 +11,13 @@ export interface IUserInfo {
     phone: string;
     role: UserRole;
     password?: string;
+    email: string;
+    birthDay: string;
+    city_code: number;
+    district_code: number;
+    ward_code: number;
+    address: string;
+    idNumber: number;
+    dateOfIssue: string;
+    placeOfIssue: string;
 }

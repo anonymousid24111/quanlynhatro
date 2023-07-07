@@ -8,7 +8,10 @@ import {
     ItemAction,
     ServiceType,
     IContract,
+    IBill,
+    IBillService,
 } from "./models";
+import { defaultUserInfo } from "../../utils";
 
 export const defaultApartment: IApartment = {
     id: 0,
@@ -39,7 +42,10 @@ export const defaultContract: IContract = {
     cost: 0,
     deposit: 0,
     paymentCycle: 1,
+    customer: defaultUserInfo,
+    roomId: 0,
 };
+
 export enum ServiceUnit {
     KWH,
     Person,
@@ -47,6 +53,26 @@ export enum ServiceUnit {
     Block,
     EachOne,
 }
+
+export const defaultBill: IBill = {
+    applyMonth: "",
+    billservices: [],
+    status: 0,
+    totalCost: 0,
+    roomId: 0,
+};
+
+export const defaultBillService: IBillService = {
+    ...defaultBill,
+    cost: 0,
+    count: 0,
+    endNumber: 0,
+    name: "",
+    startNumber: 0,
+    totalCost: 0,
+    type: ServiceType.DichVuKhac,
+    unit: ServiceUnit.Month,
+};
 
 export const defaultServiceList: IServiceModel[] = [
     {
@@ -72,6 +98,45 @@ export const defaultServiceList: IServiceModel[] = [
         cost: 3500,
         unit: ServiceUnit.Person,
         action: ItemAction.Add,
+    },
+];
+
+export const defaultBillServiceList: IBillService[] = [
+    {
+        localId: nanoid(),
+        name: "Tiền điện theo đồng hồ",
+        type: ServiceType.DienCoDinhTheoDongHo,
+        cost: 3500,
+        unit: ServiceUnit.KWH,
+        action: ItemAction.Add,
+        count: 0,
+        endNumber: 0,
+        startNumber: 0,
+        totalCost: 0,
+    },
+    {
+        localId: nanoid(),
+        name: "Tiền nước",
+        type: ServiceType.NuocCoDinhTheoNguoi,
+        cost: 80000,
+        unit: ServiceUnit.Person,
+        action: ItemAction.Add,
+        count: 0,
+        endNumber: 0,
+        startNumber: 0,
+        totalCost: 0,
+    },
+    {
+        localId: nanoid(),
+        name: "Tiền internet",
+        type: ServiceType.MangInternet,
+        cost: 3500,
+        unit: ServiceUnit.Person,
+        action: ItemAction.Add,
+        count: 0,
+        endNumber: 0,
+        startNumber: 0,
+        totalCost: 0,
     },
 ];
 
