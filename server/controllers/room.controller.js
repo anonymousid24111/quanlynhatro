@@ -101,6 +101,7 @@ const createContract = async (req, res) => {
         }
         let newUser;
         try {
+            const hashedPassword = await bcrypt.hash("idnumber", 10);
             newUser = await UserProfile.create({
                 email,
                 phone,
@@ -115,6 +116,7 @@ const createContract = async (req, res) => {
                 ward_code,
                 birthDay,
                 dateOfIssue,
+                password: hashedPassword,
             });
         } catch (error) {
             console.log("Create User Error");
