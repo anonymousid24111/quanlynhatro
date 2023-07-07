@@ -7,6 +7,7 @@ import {
     addBillAsync,
     deleteApartmentAsync,
     deleteRoomAsync,
+    getAllRoomsAsync,
     getApartmentsAsync,
     getBillsAsync,
     getRoomsAsync,
@@ -176,6 +177,10 @@ export const lessorSlice = createSlice({
                 state.apartmentListPage.items = data || [];
             })
             .addCase(getRoomsAsync.fulfilled, (state, action) => {
+                const { data } = action.payload || [];
+                state.roomListPage.items = data || [];
+            })
+            .addCase(getAllRoomsAsync.fulfilled, (state, action) => {
                 const { data } = action.payload || [];
                 state.roomListPage.items = data || [];
             })

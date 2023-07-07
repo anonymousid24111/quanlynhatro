@@ -24,6 +24,9 @@ export const getRooms = ({ id }: { id: number }) => {
         },
     });
 };
+export const getAllRooms = () => {
+    return fetchHandler.get("/room/getAllRoom");
+};
 export const getBills = () => {
     return fetchHandler.get("/room/getListBill");
 };

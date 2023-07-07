@@ -3,6 +3,7 @@ import { Pie, PieChart, Cell } from "recharts";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { useEffect } from "react";
 import {
+    getAllRoomsAsync,
     getApartmentsAsync,
     getBillsAsync,
     getRoomsAsync,
@@ -50,13 +51,7 @@ const Report = () => {
     useEffect(() => {
         dispatch(getBillsAsync());
         dispatch(getApartmentsAsync());
-        if (searchParams.get("apartmentId")) {
-            dispatch(
-                getRoomsAsync({
-                    id: Number(searchParams.get("apartmentId")),
-                })
-            );
-        }
+        dispatch(getAllRoomsAsync());
     }, [searchParams.get("apartmentId")]);
 
     const renderCustomizedLabel = ({

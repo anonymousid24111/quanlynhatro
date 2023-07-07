@@ -320,6 +320,61 @@ const updateRoom = async (req, res) => {
         });
     }
 };
+const getAllRoom = async (req, res) => {
+    try {
+        const roomList = await RoomModel.findAll({
+            include: [
+                {
+                    model: ApartmentModel,
+                    include: ServiceModel,
+                },
+                EquipmentModel,
+                {
+                    model: ContractModel,
+                    include: UserProfile,
+                },
+            ],
+        });
+        res.json({
+            data: roomList,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: err,
+        });
+    }
+};
+const getAllPost = async (req, res) => {
+    try {
+        console.log("req.query", req.query);
+        const { id } = req.query;
+        const roomList = await RoomModel.findAll({
+            where: {
+                status: 0,
+            },
+            include: [
+                {
+                    model: ApartmentModel,
+                    include: ServiceModel,
+                },
+                EquipmentModel,
+                {
+                    model: ContractModel,
+                    include: UserProfile,
+                },
+            ],
+        });
+        res.json({
+            data: roomList,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: err,
+        });
+    }
+};
 const getListRoom = async (req, res) => {
     try {
         console.log("req.query", req.query);
@@ -423,4 +478,6 @@ module.exports = {
     createContract,
     createBill,
     getListBill,
+    getAllRoom,
+    getAllPost,
 };

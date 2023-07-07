@@ -11,13 +11,14 @@ import UserManagement from "./pages/admin/usermangement/UserManagement";
 import Guest from "./pages/guest/Guest";
 import Lessor from "./pages/lessor/Lessor";
 import Apartment from "./pages/lessor/apartment/Apartment";
+import BillLessor from "./pages/lessor/bill/Bill";
+import PostLessor from "./pages/lessor/post/Post";
 import Report from "./pages/lessor/report/Report";
 import RoomLessor from "./pages/lessor/room/Room";
 import Login from "./pages/login/Login";
 import SignUp from "./pages/signup/SignUp";
 import Tenant from "./pages/tenant/Tenant";
 import Bill from "./pages/tenant/bill/Bill";
-import BillLessor from "./pages/lessor/bill/Bill";
 import Post from "./pages/tenant/post/Post";
 import Profile from "./pages/tenant/profile/Profile";
 import Room from "./pages/tenant/room/Room";
@@ -78,7 +79,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "post",
-                element: <Post />,
+                element: <PostLessor />,
             },
             {
                 path: "bill",

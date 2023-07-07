@@ -6,6 +6,7 @@ import {
     addRoom,
     deleteApartment,
     deleteRoom,
+    getAllRooms,
     getApartments,
     getBills,
     getRooms,
@@ -87,6 +88,15 @@ export const getRoomsAsync = createAsyncThunk(
         const response = await getRooms({
             id,
         });
+        console.log("response", response);
+        return response.data;
+    }
+);
+
+export const getAllRoomsAsync = createAsyncThunk(
+    "lessor/getAllRooms",
+    async () => {
+        const response = await getAllRooms();
         console.log("response", response);
         return response.data;
     }

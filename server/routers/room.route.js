@@ -9,6 +9,8 @@ const {
     createBill,
     getListBill,
     updateBill,
+    getAllRoom,
+    getAllPost,
 } = require("../controllers/room.controller");
 const { isAuth } = require("../middlewares/auth.middleware");
 
@@ -19,6 +21,8 @@ router.post("/update/:id", isAuth, updateRoom);
 router.post("/updateBill/:id", isAuth, updateBill);
 router.delete("/:id", isAuth, deleteRoom);
 router.get("/list", isAuth, getListRoom);
+router.get("/getAllRoom", isAuth, getAllRoom);
+router.get("/getAllPost", isAuth, getAllPost);
 router.get("/getListBill", isAuth, getListBill);
 
 module.exports = router;
